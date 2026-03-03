@@ -1,0 +1,108 @@
+{
+  "projectType": "saas",
+  "projectName": "MLB.TheOhtani.com",
+  "projectDescription": "A comprehensive web application for tracking MLB games, exploring player statistics, and querying the MLB Stats API with an interactive playground.",
+  "theme": "aspen",
+  "primaryColor": "#C41E3A",
+  "lightColor": "#E4002B",
+  "darkColor": "#A71930",
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "introduction",
+              "features",
+              "navigation"
+            ]
+          },
+          {
+            "group": "Core Features",
+            "pages": [
+              "features/schedules",
+              "features/game-details",
+              "features/player-stats",
+              "features/standings",
+              "features/transactions",
+              "features/api-playground"
+            ]
+          },
+          {
+            "group": "Using the App",
+            "pages": [
+              "guides/viewing-games",
+              "guides/tracking-favorites",
+              "guides/comparing-players",
+              "guides/exploring-stats"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Integration",
+        "groups": [
+          {
+            "group": "MLB Stats API",
+            "pages": [
+              "api/overview",
+              "api/playground",
+              "api/endpoints"
+            ]
+          },
+          {
+            "group": "Data Fetching",
+            "pages": [
+              "api/fetch-library",
+              "api/presets",
+              "api/live-data"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Technical",
+        "groups": [
+          {
+            "group": "Architecture",
+            "pages": [
+              "technical/stack",
+              "technical/structure",
+              "technical/components"
+            ]
+          },
+          {
+            "group": "Type System",
+            "pages": [
+              "technical/type-definitions",
+              "technical/api-types"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  "keyFeatures": [
+    "Real-time MLB game tracking with live scores and play-by-play",
+    "Weekly and daily schedule views with game status updates",
+    "Comprehensive player statistics and comparison tools",
+    "Interactive MLB Stats API playground for exploring endpoints",
+    "Team standings, transactions, and season information",
+    "Favorites system for tracking preferred teams and players",
+    "Responsive design with dark mode support"
+  ],
+  "publicApiSurface": [
+    "fetchMLB(endpoint, params) - Core fetch wrapper for MLB Stats API",
+    "fetchSeason(year, sportId) - Retrieve season information",
+    "fetchWeekSchedule(date, sportId) - Get weekly game schedule",
+    "fetchDaySchedule(date, sportId) - Get daily game schedule",
+    "fetchfeedLive(gamePk) - Fetch live game feed data",
+    "fetchBoxscore(gamePk, params) - Get game boxscore",
+    "fetchLinescore(gamePk) - Get game linescore",
+    "fetchWinProbability(gamePk) - Get win probability data",
+    "fetchWeekTransactions(params) - Get weekly transactions",
+    "createPreset(build) - Create reusable fetch preset functions"
+  ]
+}
