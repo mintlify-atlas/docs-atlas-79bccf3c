@@ -7,7 +7,7 @@ The MLB.TheOhtani.com codebase follows SvelteKit's conventions with a clear sepa
 
 ## Directory Overview
 
-```
+```text
 src/
 ├── lib/              # Shared utilities and business logic
 ├── ui/               # Reusable UI components
@@ -55,6 +55,7 @@ Reusable Svelte components organized by feature.
 ### Component Categories
 
 #### Game Components (`ui/game/`)
+
 - `status.svelte` - Game status display
 - `team-scores.svelte` - Score display
 - `probable-pitchers.svelte` - Starting pitcher info
@@ -64,12 +65,14 @@ Reusable Svelte components organized by feature.
 - `top-performers.svelte` - Game highlights
 
 #### Team Components (`ui/team/`)
+
 - `logo.svelte` - Team logo display
 - `roster.svelte` - Team roster display
 - `styled-team.svelte` - Team-themed styling
 - `team-calendar.svelte` - Team schedule view
 
 #### Player Components (`ui/player/`)
+
 - `headshot.svelte` - Player photo
 - `player-info.svelte` - Player details
 - `search.svelte` - Player search
@@ -77,6 +80,7 @@ Reusable Svelte components organized by feature.
 - `hot-cold-zones-list.svelte` - Batting zones
 
 #### Stats Components (`ui/stats/`)
+
 - `year-by-year.svelte` - Career statistics
 - `year-by-year-list.svelte` - Stats table
 - `hot-cold-zones.svelte` - Zone visualization
@@ -86,6 +90,7 @@ Reusable Svelte components organized by feature.
 - `month-picker.svelte` - Month selection
 
 #### Schedule Components (`ui/schedule/`)
+
 - `calendar.svelte` - Calendar view
 - `date-picker.svelte` - Date selection
 - `week-picker.svelte` - Week navigation
@@ -94,6 +99,7 @@ Reusable Svelte components organized by feature.
 - `store.svelte.ts` - Schedule state management
 
 #### Sidebar Components (`ui/sidebar/`)
+
 - `drawer.svelte` - Sidebar container
 - `nav.svelte` - Navigation menu
 - `toggle-sidebar.svelte` - Sidebar toggle
@@ -104,18 +110,21 @@ Reusable Svelte components organized by feature.
 - `game-count.svelte` - Game counter
 
 #### Season Components (`ui/season/`)
+
 - `season-info.svelte` - Season details
 - `season-progress.svelte` - Progress bar
 - `countdown.svelte` - Game countdown
 - `countdown-list.svelte` - Multiple countdowns
 
 #### Transaction Components (`ui/transactions/`)
+
 - `transaction.svelte` - Single transaction
 - `transaction-list.svelte` - Transaction feed
 - `by-team.svelte` - Team transactions
 - `utils.ts` - Transaction helpers
 
 #### Playground Components (`ui/playground/`)
+
 - `select-endpoint.svelte` - API endpoint selector
 - `parameters-table.svelte` - Parameter configuration
 - `parameter-row.svelte` - Individual parameter
@@ -127,6 +136,7 @@ Reusable Svelte components organized by feature.
 #### Icons (`ui/icons/`)
 
 SVG icon components:
+
 - Baseball: `ball.svelte`, `bat.svelte`, `diamond.svelte`, `helmet.svelte`, `jersey.svelte`
 - UI: `chevron-left.svelte`, `chevron-right.svelte`, `expand-*.svelte`, `collapse-*.svelte`
 - Actions: `search.svelte`, `send.svelte`, `star.svelte`, `eye.svelte`, `split.svelte`
@@ -136,6 +146,7 @@ SVG icon components:
 - `index.ts` - Icon exports
 
 #### Spoiler Prevention (`ui/spoiler-prevention/`)
+
 - `toggle-spoiler-prevention.svelte` - Toggle control
 - `store.svelte.ts` - Spoiler state
 

@@ -86,7 +86,7 @@ Parameters are divided into two types:
 
 Path parameters are part of the endpoint URL:
 
-```
+```text
 /api/v1/teams/{teamId}
 ```
 
@@ -98,7 +98,7 @@ Example values:
 
 Query parameters are added to the URL:
 
-```
+```text
 /api/v1/schedule?sportId=1&date=2026-03-26
 ```
 
@@ -166,7 +166,7 @@ Common hydrations:
 
 ### Get Today's Schedule
 
-```
+```text
 Endpoint: /api/v1/schedule
 Parameters:
   sportId: 1
@@ -176,7 +176,7 @@ Parameters:
 
 ### Get Live Game Feed
 
-```
+```text
 Endpoint: /api/v1.1/game/{gamePk}/feed/live
 Path Parameters:
   gamePk: 813024
@@ -186,7 +186,7 @@ Query Parameters:
 
 ### Get Player Stats
 
-```
+```text
 Endpoint: /api/v1/people/{personId}/stats
 Path Parameters:
   personId: 660271 (Shohei Ohtani)
@@ -198,7 +198,7 @@ Query Parameters:
 
 ### Get Team Roster
 
-```
+```text
 Endpoint: /api/v1/teams/{teamId}/roster
 Path Parameters:
   teamId: 119 (Dodgers)
@@ -211,7 +211,7 @@ Query Parameters:
 
 The playground includes a custom endpoint option for exploring unlisted API paths:
 
-```
+```text
 Endpoint: /{custom}
 Path Parameters:
   custom: /api/v1/your/custom/path

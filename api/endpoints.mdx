@@ -15,7 +15,7 @@ All endpoints are relative to the base URL: `https://statsapi.mlb.com`
 
 ### List Sports
 
-```
+```http
 GET /api/v1/sports
 ```
 
@@ -33,7 +33,7 @@ List all sports with their IDs (MLB=1, AAA=11, etc.) and basic metadata.
 
 ### Get Divisions
 
-```
+```http
 GET /api/v1/divisions
 ```
 
@@ -49,7 +49,7 @@ Get division info (AL East, NL West, etc.) with standings order; filter by leagu
 
 ### Get Leagues
 
-```
+```http
 GET /api/v1/leagues
 ```
 
@@ -63,7 +63,7 @@ Get league details (American/National) including season dates and structure.
 
 ### Get Schedule
 
-```
+```http
 GET /api/v1/schedule
 ```
 
@@ -99,7 +99,7 @@ Get game schedules by date, date range, team, or venue; returns gamePk IDs neede
 
 ### Get Postseason Schedule
 
-```
+```http
 GET /api/v1/schedule/postseason
 ```
 
@@ -121,7 +121,7 @@ Get postseason bracket and series info (World Series, LCS, LDS); includes series
 
 ### Get Live Game Feed
 
-```
+```http
 GET /api/v1.1/game/{gamePk}/feed/live
 ```
 
@@ -141,7 +141,7 @@ Complete live game feed with all plays, runners, count, matchups; use timecode t
 
 ### Get Boxscore
 
-```
+```http
 GET /api/v1/game/{gamePk}/boxscore
 ```
 
@@ -153,7 +153,7 @@ Traditional box score with batting/pitching lines, player stats, and game totals
 
 ### Get Linescore
 
-```
+```http
 GET /api/v1/game/{gamePk}/linescore
 ```
 
@@ -165,7 +165,7 @@ Inning-by-inning runs, hits, errors; current inning state for live games.
 
 ### Get Game Content
 
-```
+```http
 GET /api/v1/game/{gamePk}/content
 ```
 
@@ -177,7 +177,7 @@ Game media content including highlight videos, editorial recap, and photo galler
 
 ### Get Context Metrics
 
-```
+```http
 GET /api/v1/game/{gamePk}/contextMetrics
 ```
 
@@ -189,7 +189,7 @@ Advanced context stats like leverage index, win expectancy, and championship pro
 
 ### Get Win Probability
 
-```
+```http
 GET /api/v1/game/{gamePk}/winProbability
 ```
 
@@ -201,7 +201,7 @@ Win probability after each play; shows how each at-bat shifted the odds for home
 
 ### Get Play by Play
 
-```
+```http
 GET /api/v1/game/{gamePk}/playByPlay
 ```
 
@@ -213,7 +213,7 @@ Chronological list of all plays with descriptions; lighter than live feed for hi
 
 ### Get Game Changes
 
-```
+```http
 GET /api/v1/game/changes
 ```
 
@@ -229,7 +229,7 @@ List of games updated since a given date/time; useful for syncing or tracking po
 
 ### Get Game Pace
 
-```
+```http
 GET /api/v1/gamePace
 ```
 
@@ -247,7 +247,7 @@ Pace of play statistics for a season: average game time, pitches per game, time 
 
 ### List Teams
 
-```
+```http
 GET /api/v1/teams
 ```
 
@@ -263,7 +263,7 @@ List all teams with IDs, names, abbreviations, venue, and league/division info; 
 
 ### Get Team Details
 
-```
+```http
 GET /api/v1/teams/{teamId}
 ```
 
@@ -275,7 +275,7 @@ Detailed team info: full name, venue, league, division, first year, and social m
 
 ### Get Team Roster
 
-```
+```http
 GET /api/v1/teams/{teamId}/roster
 ```
 
@@ -295,7 +295,7 @@ Current or historical roster with player IDs, positions, jersey numbers, and sta
 
 ### Get Team Coaches
 
-```
+```http
 GET /api/v1/teams/{teamId}/coaches
 ```
 
@@ -311,7 +311,7 @@ Current coaching staff with coach IDs, names, positions, and status.
 
 ### Get Team History
 
-```
+```http
 GET /api/v1/teams/{teamId}/history
 ```
 
@@ -323,7 +323,7 @@ Franchise history including former names, cities, leagues, and championship seas
 
 ### Get Team Affiliates
 
-```
+```http
 GET /api/v1/teams/{teamId}/affiliates
 ```
 
@@ -337,7 +337,7 @@ Minor league affiliates (AAA, AA, A+, A, Rookie) with team names and league info
 
 ### Get Person Details
 
-```
+```http
 GET /api/v1/people/{personId}
 ```
 
@@ -353,7 +353,7 @@ Player bio: birthDate, birthCity, height, weight, position, bats/throws, draft i
 
 ### Get Person Stats
 
-```
+```http
 GET /api/v1/people/{personId}/stats
 ```
 
@@ -381,7 +381,7 @@ Player statistics: season or career totals for hitting/pitching/fielding; filter
 
 ### Get Person Game Stats
 
-```
+```http
 GET /api/v1/people/{personId}/stats/game/{gamePk}
 ```
 
@@ -397,7 +397,7 @@ Player's stats from a specific game: at-bats, hits, RBIs, innings pitched, strik
 
 ### Get Free Agents
 
-```
+```http
 GET /api/v1/people/freeAgents
 ```
 
@@ -409,7 +409,7 @@ List of free agents for a given offseason with their previous team and contract 
 
 ### Get People Changes
 
-```
+```http
 GET /api/v1/people/changes
 ```
 
@@ -421,7 +421,7 @@ Players whose records changed since a date; useful for tracking roster moves and
 
 ### Search People
 
-```
+```http
 GET /api/v1/people/search
 ```
 
@@ -435,7 +435,7 @@ Search players by name (partial match); use this first to find personId for othe
 
 ### Get Standings
 
-```
+```http
 GET /api/v1/standings
 ```
 
@@ -453,7 +453,7 @@ Current standings with W-L record, PCT, GB, streak, last 10, home/away splits by
 
 ### Get Stats
 
-```
+```http
 GET /api/v1/stats
 ```
 
@@ -473,7 +473,7 @@ General stats query for aggregated league-wide statistics by season and stat gro
 
 ### Get Leaders
 
-```
+```http
 GET /api/v1/stats/leaders
 ```
 
@@ -499,7 +499,7 @@ League leaders in specific categories (HR, AVG, ERA, etc.); regular season or pl
 
 ### Get Seasons
 
-```
+```http
 GET /api/v1/seasons
 ```
 
@@ -515,7 +515,7 @@ Season metadata: regular season start/end dates, All-Star date, postseason dates
 
 ### Get Venues
 
-```
+```http
 GET /api/v1/venues
 ```
 
@@ -527,7 +527,7 @@ Ballpark info: location, capacity, dimensions, surface type, roof type, and time
 
 ### Get Draft
 
-```
+```http
 GET /api/v1/draft/{year}
 ```
 
@@ -539,7 +539,7 @@ MLB Draft results by year: all rounds and picks with player info, school, and si
 
 ### Get Transactions
 
-```
+```http
 GET /api/v1/transactions
 ```
 
@@ -571,7 +571,7 @@ Roster transactions: trades, signings, DFA, IL moves, call-ups; filter by team, 
 
 ### Get Jobs
 
-```
+```http
 GET /api/v1/jobs/{jobType}
 ```
 
@@ -587,7 +587,7 @@ Game officials by type: umpire crews, official scorers, and datacasters assigned
 
 ### Get Uniforms
 
-```
+```http
 GET /api/v1/uniforms/game
 ```
 
@@ -599,7 +599,7 @@ Uniform details for specific games: jersey style, cap, pants, and special event 
 
 ### Get Attendance
 
-```
+```http
 GET /api/v1/attendance
 ```
 
@@ -617,7 +617,7 @@ Attendance figures by team and season: total, average, home/away, and capacity p
 
 ### Get Baseball Stats
 
-```
+```http
 GET /api/v1/baseballStats
 ```
 
@@ -625,7 +625,7 @@ All available stat types and categories (homeRuns, battingAverage, era, wins, et
 
 ### Get Game Status
 
-```
+```http
 GET /api/v1/gameStatus
 ```
 
@@ -633,7 +633,7 @@ All possible game status codes (Scheduled, In Progress, Final, Postponed, etc.) 
 
 ### Get Game Types
 
-```
+```http
 GET /api/v1/gameTypes
 ```
 

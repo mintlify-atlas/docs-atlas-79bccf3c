@@ -210,7 +210,7 @@ Use the fields parameter to request only the data you need, reducing response si
 
 ### Get Today's Games
 
-```
+```http
 GET /api/v1/schedule?date=2024-07-15
 ```
 
@@ -218,7 +218,7 @@ Returns all games scheduled for July 15, 2024.
 
 ### Live Game Data
 
-```
+```http
 GET /api/v1.1/game/717159/feed/live?fields=gameData,liveData,plays,currentPlay
 ```
 
@@ -226,7 +226,7 @@ Fetches live data for game #717159 with only play information.
 
 ### Player Stats
 
-```
+```http
 GET /api/v1/people/660271?hydrate=stats(group=hitting,type=season)
 ```
 
@@ -234,7 +234,7 @@ Gets Shohei Ohtani's hitting stats for the current season.
 
 ### Team Standings
 
-```
+```http
 GET /api/v1/standings?leagueId=103&season=2024&standingsTypes=regularSeason
 ```
 
@@ -266,7 +266,7 @@ Reduce response size by requesting specific fields:
 </CodeGroup>
 
 Field filter:
-```
+```text
 fields=gameData,teams,away,home,name,id
 ```
 
@@ -287,7 +287,7 @@ Enrich responses with related data:
 
 ### Multiple Hydrations
 
-```
+```text
 hydrate=team,linescore,decisions
 ```
 
