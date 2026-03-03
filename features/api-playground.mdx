@@ -1,0 +1,384 @@
+---
+title: 'API Playground'
+description: 'Interactive explorer for MLB Stats API endpoints with real-time testing and documentation'
+---
+
+## Overview
+
+The API Playground is an interactive tool for exploring MLB's Stats API. Test endpoints, view responses, and understand the data structure without writing code.
+
+<Warning>
+The API Playground is currently under development. This documentation describes planned features based on the application's route structure.
+</Warning>
+
+## Getting Started
+
+Access the API Playground from the main navigation:
+
+<Steps>
+  <Step title="Select API Version">
+    Choose which version of the MLB Stats API you want to explore (v1, v1.1, etc.).
+  </Step>
+  
+  <Step title="Browse Endpoints">
+    Navigate through available API endpoints organized by category.
+  </Step>
+  
+  <Step title="Test Requests">
+    Make live API calls and see real responses from MLB's servers.
+  </Step>
+  
+  <Step title="Explore Data">
+    Examine the JSON response structure and available fields.
+  </Step>
+</Steps>
+
+## API Versions
+
+MLB provides multiple API versions:
+
+<Tabs>
+  <Tab title="v1.1 (Recommended)">
+    Latest stable version with:
+    - Enhanced field filtering
+    - Improved performance
+    - Extended data coverage
+    - Better documentation
+  </Tab>
+  
+  <Tab title="v1.0">
+    Legacy version:
+    - Stable and widely used
+    - Complete game data
+    - Player statistics
+    - Team information
+  </Tab>
+</Tabs>
+
+## Endpoint Categories
+
+API endpoints are organized by data type:
+
+### Schedule Endpoints
+
+<CardGroup cols={2}>
+  <Card title="/api/v1/schedule">
+    Get games by date range, team, or season.
+  </Card>
+  
+  <Card title="/api/v1.1/schedule">
+    Enhanced scheduling with flexible date parameters.
+  </Card>
+</CardGroup>
+
+### Game Endpoints
+
+<CardGroup cols={2}>
+  <Card title="/api/v1.1/game/{gamePk}/feed/live">
+    Live game data with play-by-play.
+  </Card>
+  
+  <Card title="/api/v1/game/{gamePk}/boxscore">
+    Detailed box score statistics.
+  </Card>
+  
+  <Card title="/api/v1/game/{gamePk}/linescore">
+    Inning-by-inning scoring summary.
+  </Card>
+  
+  <Card title="/api/v1/game/{gamePk}/winProbability">
+    Play-by-play win probability data.
+  </Card>
+</CardGroup>
+
+### Player Endpoints
+
+<CardGroup cols={2}>
+  <Card title="/api/v1/people/{personId}">
+    Individual player information and stats.
+  </Card>
+  
+  <Card title="/api/v1/people/search">
+    Search for players by name.
+  </Card>
+</CardGroup>
+
+### Team Endpoints
+
+<CardGroup cols={2}>
+  <Card title="/api/v1/teams">
+    List of all MLB teams.
+  </Card>
+  
+  <Card title="/api/v1/teams/{teamId}/roster">
+    Current team roster.
+  </Card>
+</CardGroup>
+
+### Standings Endpoints
+
+<Card title="/api/v1/standings">
+  League and division standings with customizable parameters.
+</Card>
+
+## Query Parameters
+
+Most endpoints accept parameters to filter and customize responses:
+
+### Common Parameters
+
+<AccordionGroup>
+  <Accordion title="sportId">
+    Filter by sport:
+    - `1` = MLB (default)
+    - Other values for minor leagues
+  </Accordion>
+  
+  <Accordion title="season">
+    Specify season year:
+    - `2024`, `2023`, etc.
+    - Defaults to current season
+  </Accordion>
+  
+  <Accordion title="gameType">
+    Filter by game type:
+    - `R` = Regular Season
+    - `S` = Spring Training
+    - `F` = Wild Card
+    - `D` = Division Series
+    - `L` = League Championship
+    - `W` = World Series
+  </Accordion>
+  
+  <Accordion title="hydrate">
+    Include additional data:
+    - `hydrate=team` - Include team details
+    - `hydrate=linescore` - Add linescore
+    - `hydrate=decisions` - Include pitching decisions
+    - Multiple values comma-separated
+  </Accordion>
+  
+  <Accordion title="fields">
+    Select specific response fields:
+    - Reduces payload size
+    - Improves performance
+    - Comma-separated list
+    - Example: `fields=teams,away,home,name,id`
+  </Accordion>
+</AccordionGroup>
+
+## Making Requests
+
+The playground interface provides:
+
+### Request Builder
+
+<Steps>
+  <Step title="Select Endpoint">
+    Choose from the categorized list of available endpoints.
+  </Step>
+  
+  <Step title="Add Parameters">
+    Fill in required path parameters (like `gamePk` or `personId`).
+  </Step>
+  
+  <Step title="Configure Options">
+    Set optional query parameters and hydration options.
+  </Step>
+  
+  <Step title="Execute Request">
+    Click "Send Request" to make the API call.
+  </Step>
+</Steps>
+
+### Response Viewer
+
+After executing a request:
+
+- **JSON Response**: Formatted and syntax-highlighted
+- **Status Code**: HTTP response code (200, 404, etc.)
+- **Response Time**: How long the request took
+- **Headers**: Response headers from the API
+- **Copy Button**: Copy JSON to clipboard
+- **Download**: Save response as a file
+
+<Tip>
+Use the fields parameter to request only the data you need, reducing response size and improving load times.
+</Tip>
+
+## Example Use Cases
+
+### Get Today's Games
+
+```
+GET /api/v1/schedule?date=2024-07-15
+```
+
+Returns all games scheduled for July 15, 2024.
+
+### Live Game Data
+
+```
+GET /api/v1.1/game/717159/feed/live?fields=gameData,liveData,plays,currentPlay
+```
+
+Fetches live data for game #717159 with only play information.
+
+### Player Stats
+
+```
+GET /api/v1/people/660271?hydrate=stats(group=hitting,type=season)
+```
+
+Gets Shohei Ohtani's hitting stats for the current season.
+
+### Team Standings
+
+```
+GET /api/v1/standings?leagueId=103&season=2024&standingsTypes=regularSeason
+```
+
+Returns American League standings for 2024.
+
+## Field Filtering
+
+Reduce response size by requesting specific fields:
+
+<CodeGroup>
+```json All Fields
+{
+  "gameData": { ... }, // Entire game object
+  "liveData": { ... },  // All live data
+  "metaData": { ... }   // Metadata
+}
+```
+
+```json Filtered Fields  
+{
+  "gameData": {
+    "teams": {
+      "away": { "name": "...", "id": ... },
+      "home": { "name": "...", "id": ... }
+    }
+  }
+}
+```
+</CodeGroup>
+
+Field filter:
+```
+fields=gameData,teams,away,home,name,id
+```
+
+## Hydration Options
+
+Enrich responses with related data:
+
+### Available Hydrations
+
+- `team` - Team details
+- `linescore` - Inning-by-inning scores
+- `flags` - Game flags (no-hitter, perfect game)
+- `scoringplays` - All plays that scored runs
+- `decisions` - Winning/losing/saving pitcher
+- `person` - Player biographical info
+- `stats` - Statistical data
+- `currentTeam` - Player's current team
+
+### Multiple Hydrations
+
+```
+hydrate=team,linescore,decisions
+```
+
+Combine multiple hydrations in a single request.
+
+<Note>
+More hydrations = larger response size. Only request what you need.
+</Note>
+
+## Rate Limiting
+
+The MLB Stats API has rate limits:
+
+- Limits vary by endpoint
+- Excessive requests may be throttled
+- Use field filtering to reduce calls
+- Cache responses when possible
+- The playground enforces reasonable limits
+
+## Error Handling
+
+Common error responses:
+
+<AccordionGroup>
+  <Accordion title="404 Not Found">
+    The requested resource doesn't exist:
+    - Invalid game ID
+    - Player not found
+    - Wrong endpoint path
+  </Accordion>
+  
+  <Accordion title="400 Bad Request">
+    Invalid parameters:
+    - Missing required parameter
+    - Invalid date format
+    - Malformed field filter
+  </Accordion>
+  
+  <Accordion title="500 Server Error">
+    API server issue:
+    - Try again later
+    - Check MLB API status
+    - Report persistent errors
+  </Accordion>
+</AccordionGroup>
+
+## Best Practices
+
+<CardGroup cols={2}>
+  <Card title="Use Field Filtering" icon="filter">
+    Request only needed fields to improve performance and reduce bandwidth.
+  </Card>
+  
+  <Card title="Cache Responses" icon="database">
+    Store responses for historical data that won't change.
+  </Card>
+  
+  <Card title="Handle Errors" icon="triangle-exclamation">
+    Check status codes and handle errors gracefully in your application.
+  </Card>
+  
+  <Card title="Respect Limits" icon="gauge-high">
+    Don't exceed rate limits; implement backoff strategies.
+  </Card>
+</CardGroup>
+
+## Integration Examples
+
+The playground helps you understand the API before integrating it into your app:
+
+1. **Test Endpoints**: Verify the data structure
+2. **Copy Requests**: Use the generated URLs in your code
+3. **Understand Responses**: Know what fields are available
+4. **Debug Issues**: Test parameters and troubleshoot errors
+
+<Card title="Related: API Overview" icon="book" href="/api/overview">
+  View complete API documentation and endpoint reference.
+</Card>
+
+## Saving Requests
+
+<Info>
+Future feature: Save frequently used requests for quick access later.
+</Info>
+
+## Sharing Playground Links
+
+<Info>
+Future feature: Share playground configurations via URL parameters.
+</Info>
+
+<Card title="Back to Features" icon="grid" href="/features">
+  Explore other core features of MLB.TheOhtani.com.
+</Card>

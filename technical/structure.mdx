@@ -1,0 +1,270 @@
+---
+title: Project Structure
+description: Organization of the codebase, directory layout, and architectural patterns
+---
+
+The MLB.TheOhtani.com codebase follows SvelteKit's conventions with a clear separation of concerns.
+
+## Directory Overview
+
+```
+src/
+├── lib/              # Shared utilities and business logic
+├── ui/               # Reusable UI components
+├── routes/           # SvelteKit pages and API routes
+├── params/           # Route parameter validation
+├── app.d.ts          # Global TypeScript declarations
+├── app.html          # HTML template
+└── mlb.d.ts          # MLB API type definitions
+```
+
+## Library Code (`src/lib/`)
+
+Shared utilities, helpers, and business logic.
+
+### Core Utilities
+
+- **`fetch/`** - MLB API data fetching
+  - `index.ts` - Core fetch utilities
+  - `live.svelte.ts` - Live data polling with Svelte runes
+  - `presets.ts` - Pre-configured API endpoints
+
+- **`attachments/`** - DOM interaction utilities
+  - `intersection-observer.ts` - Viewport visibility detection
+  - `mutation-observer.ts` - DOM change observation
+  - `label-drag.ts` - Draggable label interactions
+
+- **`server/`** - Server-side utilities
+  - `posthog.ts` - Analytics initialization
+  - `random.ts` - Random number generation
+
+### Utility Modules
+
+- `utils.ts` - General helper functions
+- `stats.ts` - Baseball statistics calculations
+- `temporal.ts` - Date/time utilities
+- `colors.ts` - Color scheme utilities
+- `console.ts` - Console logging helpers
+- `url.svelte.ts` - URL state management with Svelte runes
+- `index.ts` - Library exports
+
+## UI Components (`src/ui/`)
+
+Reusable Svelte components organized by feature.
+
+### Component Categories
+
+#### Game Components (`ui/game/`)
+- `status.svelte` - Game status display
+- `team-scores.svelte` - Score display
+- `probable-pitchers.svelte` - Starting pitcher info
+- `plays.svelte` - Play-by-play display
+- `linescore.svelte` - Inning-by-inning scores
+- `win-probability.svelte` - Win probability chart
+- `top-performers.svelte` - Game highlights
+
+#### Team Components (`ui/team/`)
+- `logo.svelte` - Team logo display
+- `roster.svelte` - Team roster display
+- `styled-team.svelte` - Team-themed styling
+- `team-calendar.svelte` - Team schedule view
+
+#### Player Components (`ui/player/`)
+- `headshot.svelte` - Player photo
+- `player-info.svelte` - Player details
+- `search.svelte` - Player search
+- `roster-entries.svelte` - Roster listings
+- `hot-cold-zones-list.svelte` - Batting zones
+
+#### Stats Components (`ui/stats/`)
+- `year-by-year.svelte` - Career statistics
+- `year-by-year-list.svelte` - Stats table
+- `hot-cold-zones.svelte` - Zone visualization
+- `strikezone.svelte` - Strike zone display
+- `home-plate.svelte` - Home plate graphic
+- `season-picker.svelte` - Season selection
+- `month-picker.svelte` - Month selection
+
+#### Schedule Components (`ui/schedule/`)
+- `calendar.svelte` - Calendar view
+- `date-picker.svelte` - Date selection
+- `week-picker.svelte` - Week navigation
+- `month-picker-with-year.svelte` - Month/year selector
+- `year-picker.svelte` - Year selection
+- `store.svelte.ts` - Schedule state management
+
+#### Sidebar Components (`ui/sidebar/`)
+- `drawer.svelte` - Sidebar container
+- `nav.svelte` - Navigation menu
+- `toggle-sidebar.svelte` - Sidebar toggle
+- `toggle-color-scheme.svelte` - Theme switcher
+- `favorites-list.svelte` - Favorite teams
+- `compare-list.svelte` - Team comparison
+- `spoiler-prevention-list.svelte` - Spoiler settings
+- `game-count.svelte` - Game counter
+
+#### Season Components (`ui/season/`)
+- `season-info.svelte` - Season details
+- `season-progress.svelte` - Progress bar
+- `countdown.svelte` - Game countdown
+- `countdown-list.svelte` - Multiple countdowns
+
+#### Transaction Components (`ui/transactions/`)
+- `transaction.svelte` - Single transaction
+- `transaction-list.svelte` - Transaction feed
+- `by-team.svelte` - Team transactions
+- `utils.ts` - Transaction helpers
+
+#### Playground Components (`ui/playground/`)
+- `select-endpoint.svelte` - API endpoint selector
+- `parameters-table.svelte` - Parameter configuration
+- `parameter-row.svelte` - Individual parameter
+- `response.svelte` - API response display
+- `action.ts` - Playground actions
+- `constants.ts` - API constants
+- `utils.ts` - Playground utilities
+
+#### Icons (`ui/icons/`)
+
+SVG icon components:
+- Baseball: `ball.svelte`, `bat.svelte`, `diamond.svelte`, `helmet.svelte`, `jersey.svelte`
+- UI: `chevron-left.svelte`, `chevron-right.svelte`, `expand-*.svelte`, `collapse-*.svelte`
+- Actions: `search.svelte`, `send.svelte`, `star.svelte`, `eye.svelte`, `split.svelte`
+- Theme: `sun.svelte`, `moon.svelte`, `sidebar.svelte`
+- Data: `calendar.svelte`, `rank.svelte`, `info.svelte`, `flag.svelte`
+- Code: `code.svelte`, `json.svelte`, `github.svelte`, `robot.svelte`
+- `index.ts` - Icon exports
+
+#### Spoiler Prevention (`ui/spoiler-prevention/`)
+- `toggle-spoiler-prevention.svelte` - Toggle control
+- `store.svelte.ts` - Spoiler state
+
+### Root UI Components
+
+- `store.svelte.ts` - Global UI state (color scheme)
+- `header.svelte` - Page header
+- `metadata.svelte` - SEO meta tags
+- `loading.svelte` - Loading states
+- `offline.svelte` - Offline indicator
+- `video.svelte` - Video player
+- `select-team.svelte` - Team selector
+- `select-sport.svelte` - Sport selector
+- `game-type-picker.svelte` - Game type filter
+- `toggle-all-details.svelte` - Expand/collapse all
+
+## Routes (`src/routes/`)
+
+SvelteKit file-based routing.
+
+### Page Routes
+
+- `/` - Home page (`+page.svelte`)
+- `/game/[gamePk]` - Individual game view
+- `/player/[playerId]` - Player profile
+  - `/player/[playerId]/[season]` - Season-specific stats
+- `/schedule` - Schedule overview
+  - `/schedule/[date]` - Date-specific schedule
+- `/standings` - League standings
+- `/stats` - Statistics leaders
+- `/teams/[teamId]` - Team page
+- `/transactions` - Transaction feed
+- `/chat` - Chat/help interface
+
+### API Routes (`routes/api/`)
+
+Server-side API endpoints for proxying MLB data or custom logic.
+
+### Layout Files
+
+- `+layout.svelte` - Root layout component
+- `+layout.ts` - Layout load functions
+- `app.css` - Global styles
+- `fonts.css` - Font definitions
+
+## Type Definitions
+
+### `src/mlb.d.ts`
+
+Comprehensive TypeScript definitions for the MLB Stats API (1,953 lines). See [API Types](/technical/api-types) for details.
+
+### `src/app.d.ts`
+
+Global SvelteKit type declarations:
+
+```typescript
+declare global {
+  namespace App {
+    // interface Error {}
+    // interface Locals {}
+    // interface PageData {}
+    // interface PageState {}
+    // interface Platform {}
+  }
+}
+```
+
+## Parameters (`src/params/`)
+
+Route parameter matchers for type-safe routing:
+
+```typescript
+// Example: player ID validation
+export function match(param: string) {
+  return /^\d+$/.test(param)
+}
+```
+
+## Configuration Files
+
+### Root Directory
+
+- `svelte.config.js` - SvelteKit configuration
+- `vite.config.ts` - Vite build configuration
+- `tsconfig.json` - TypeScript configuration
+- `package.json` - Dependencies and scripts
+- `.prettierrc` - Code formatting rules
+
+## State Management
+
+The application uses Svelte 5's runes-based reactivity:
+
+### Global Stores
+
+- `$ui/store.svelte.ts` - Color scheme state
+- `$ui/schedule/store.svelte.ts` - Schedule navigation state
+- `$ui/spoiler-prevention/store.svelte.ts` - Spoiler prevention settings
+- `$lib/url.svelte.ts` - URL parameter state
+
+### Runes Used
+
+- `$state` - Reactive state
+- `$derived` - Computed values
+- `$effect` - Side effects
+- `$props` - Component properties
+
+## Architectural Patterns
+
+### Component Composition
+
+Components are designed to be:
+- **Small and focused** - Single responsibility
+- **Reusable** - Shared across routes
+- **Type-safe** - Full TypeScript support
+- **Accessible** - Semantic HTML and ARIA attributes
+
+### Data Fetching
+
+```typescript
+// Preset API calls
+import { fetchMLB, createPreset } from '$lib/fetch'
+
+// Live data with polling
+const liveData = fetchMLB.live(endpoint, params)
+```
+
+### Styling Approach
+
+- Utility-first with Tailwind CSS
+- Component-scoped styles when needed
+- Theme-aware (light/dark mode)
+- Responsive design patterns

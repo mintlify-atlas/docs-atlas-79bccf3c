@@ -1,0 +1,188 @@
+---
+title: Technology Stack
+description: Overview of the core technologies, frameworks, and tools powering MLB.TheOhtani.com
+---
+
+MLB.TheOhtani.com is built with modern web technologies focused on performance, type safety, and developer experience.
+
+## Core Framework
+
+### SvelteKit 2.53.4
+
+The application is built on **SvelteKit**, leveraging its file-based routing, server-side rendering (SSR), and static site generation capabilities. SvelteKit provides:
+
+- File-based routing in `src/routes/`
+- Server and client-side rendering
+- API routes for backend functionality
+- Built-in code splitting and optimization
+
+### Svelte 5.53.6
+
+The UI layer uses **Svelte 5**, which introduces:
+
+- Runes-based reactivity (`$state`, `$derived`, `$effect`)
+- Improved performance and smaller bundle sizes
+- Snippets for reusable template fragments
+- Enhanced TypeScript support
+
+## Language & Type Safety
+
+### TypeScript 5.9.3
+
+The entire codebase is written in TypeScript, providing:
+
+- Compile-time type checking
+- IntelliSense and autocomplete support
+- Comprehensive MLB API type definitions in `src/mlb.d.ts`
+- Type-safe component props and function signatures
+
+## Styling
+
+### Tailwind CSS 4.2.1
+
+Styling is handled by **Tailwind CSS v4** with the Vite plugin:
+
+```typescript
+import tailwindcss from '@tailwindcss/vite'
+```
+
+Tailwind provides:
+
+- Utility-first CSS classes
+- Custom color schemes (light/dark mode)
+- Responsive design utilities
+- JIT (Just-In-Time) compilation
+
+### CSS Utilities
+
+- **clsx** (2.1.1) - Conditional class name construction
+- **tailwind-merge** (3.5.0) - Intelligent Tailwind class merging
+
+## Build Tools
+
+### Vite 7.3.1
+
+Vite powers the development and build process:
+
+```typescript
+export default defineConfig({
+  plugins: [tailwindcss(), sveltekit()],
+  server: {
+    fs: {
+      allow: ['package.json'],
+    },
+  },
+})
+```
+
+Features:
+- Lightning-fast HMR (Hot Module Replacement)
+- Optimized production builds
+- Plugin ecosystem integration
+
+## Deployment
+
+### Vercel Adapter 6.3.3
+
+The application is optimized for deployment on Vercel:
+
+```javascript
+import adapter from '@sveltejs/adapter-vercel'
+
+const config = {
+  kit: {
+    adapter: adapter(),
+  },
+}
+```
+
+## Media & 3D
+
+### Video Streaming
+
+- **hls.js** (1.6.15) - HTTP Live Streaming for video playback
+
+### 3D Models
+
+- **@google/model-viewer** (4.1.0) - Web component for rendering 3D models
+
+## Analytics & Monitoring
+
+### PostHog
+
+- **posthog-js** (1.353.1) - Client-side analytics
+- **posthog-node** (5.26.0) - Server-side event tracking
+
+PostHog provides:
+- User behavior analytics
+- Session replay
+- Feature flags
+- A/B testing capabilities
+
+## Code Quality
+
+### Linting & Formatting
+
+- **Prettier** (3.8.1) - Code formatting
+  - `prettier-plugin-svelte` - Svelte component formatting
+  - `prettier-plugin-tailwindcss` - Tailwind class sorting
+  - `@ianvs/prettier-plugin-sort-imports` - Import organization
+
+### Type Checking
+
+- **svelte-check** (4.4.4) - Svelte component type checking
+
+## Syntax Highlighting
+
+- **shiki** (4.0.0) - Syntax highlighting for code blocks
+
+## Configuration Files
+
+### SvelteKit Config
+
+```javascript
+// svelte.config.js
+const config = {
+  preprocess: vitePreprocess(),
+  kit: {
+    adapter: adapter(),
+    alias: {
+      $ui: './src/ui',
+      $pkg: './package.json',
+    },
+    paths: {
+      relative: false, // Required for PostHog session replay
+    },
+  },
+  compilerOptions: {
+    experimental: {
+      async: true,
+    },
+  },
+}
+```
+
+### Path Aliases
+
+- `$lib` → `src/lib/`
+- `$ui` → `src/ui/`
+- `$pkg` → `package.json`
+
+## Development Scripts
+
+```json
+{
+  "dev": "vite dev --host",
+  "build": "vite build",
+  "preview": "vite preview",
+  "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+  "format": "prettier --write .",
+  "lint": "prettier --check ."
+}
+```
+
+## Version Information
+
+- **Application Version**: 0.4.183
+- **Node Module System**: ES Modules (`"type": "module"`)
+- **Private Package**: Not published to npm

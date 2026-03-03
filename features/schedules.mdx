@@ -1,0 +1,143 @@
+---
+title: 'Game Schedules'
+description: 'View MLB games with weekly and daily schedule views'
+---
+
+## Overview
+
+MLB.TheOhtani.com provides comprehensive game schedule views that let you track upcoming, live, and completed games. The schedule feature offers both weekly calendar views and detailed daily breakdowns.
+
+## Weekly Schedule
+
+The weekly schedule view displays all games for a 7-day period in an accordion-style layout.
+
+### Key Features
+
+<AccordionGroup>
+  <Accordion title="Date Navigation">
+    Use the week picker to navigate between weeks. The current week is selected by default, and you can jump to any date using the date picker control.
+  </Accordion>
+
+  <Accordion title="Auto-Refresh">
+    When viewing the current week, the schedule automatically refreshes every 3 minutes to show live game updates and score changes.
+  </Accordion>
+
+  <Accordion title="Sport Filter">
+    Filter schedules by sport using the sport selector. The default view shows MLB games, but other baseball leagues may be available.
+  </Accordion>
+
+  <Accordion title="Favorite Teams">
+    Games featuring your favorite teams appear first in each day's listing, making it easy to track the teams you care about most.
+  </Accordion>
+</AccordionGroup>
+
+### Daily Game Cards
+
+Each day in the weekly view includes:
+
+- Date header with day of week, month, and day number
+- "Today" badge for the current date (auto-expanded by default)
+- Game count indicator
+- Grid of game cards showing:
+  - Team names and logos
+  - Current scores (for live/final games)
+  - Game status and time
+  - Inning information (for live games)
+  - Probable pitchers (for upcoming games)
+
+<Tip>
+Click on any game card to view detailed play-by-play information, or click the date header to jump to the daily schedule view for that specific date.
+</Tip>
+
+## Daily Schedule
+
+The daily schedule provides a focused view of all games on a specific date, organized by game status.
+
+### Game Status Sections
+
+Games are automatically grouped into three categories:
+
+<Steps>
+  <Step title="Live Games">
+    Currently in-progress games appear first with real-time scores, inning information, and live play updates.
+  </Step>
+  
+  <Step title="Preview Games">
+    Upcoming games show scheduled start times and probable starting pitchers.
+  </Step>
+  
+  <Step title="Final Games">
+    Completed games display final scores and any special flags (perfect games, no-hitters, etc.).
+  </Step>
+</Steps>
+
+### Season Progress
+
+For regular season game days, the daily schedule includes a season progress indicator showing:
+
+- Games completed vs. total games in the season
+- Visual progress bar
+- Current date within the season timeline
+
+### Navigation
+
+The daily schedule includes:
+
+- **Date Picker**: Jump to any specific date in the MLB schedule
+- **Sport Selector**: Filter by league/sport
+- **Breadcrumbs**: Navigate back to weekly view or other dates
+
+## Game Cards
+
+Both views use interactive game cards that display:
+
+### Preview State
+- Scheduled game time
+- Probable starting pitchers with handedness indicators
+- Venue information
+- Series information (e.g., "Game 2 of 3")
+
+### Live State
+- Real-time score updates
+- Current inning and outs
+- Balls/strikes/outs count
+- Base runners visualization
+- Current batter and pitcher matchup
+- Recent play descriptions
+- Live details toggle for expanded information
+
+### Final State
+- Final scores
+- Line score showing runs per inning
+- Special game indicators:
+  - Perfect games
+  - No-hitters
+  - Other notable achievements
+
+<Note>
+Games update automatically when live. You don't need to refresh the page to see score changes.
+</Note>
+
+## Spoiler Prevention
+
+If you've enabled spoiler prevention for specific teams, game details will be hidden:
+
+- Scores are obscured
+- Play-by-play is hidden
+- Win probability charts don't display
+- Only basic game status information is shown
+
+This lets you watch replays without knowing the outcome.
+
+## Season Information
+
+Both schedule views include season metadata at the bottom:
+
+- Current season year
+- Season type (Regular Season, Postseason, etc.)
+- Season start and end dates
+- All-Star Game information
+
+<Card title="Next: Game Details" icon="baseball" href="/features/game-details">
+  Learn how to track live games with detailed play-by-play coverage.
+</Card>

@@ -1,0 +1,227 @@
+---
+title: 'Game Details'
+description: 'Live game tracking with play-by-play, win probability, and video highlights'
+---
+
+## Overview
+
+The game details page provides comprehensive real-time coverage of MLB games, including live play-by-play updates, win probability charts, video highlights, and detailed box scores.
+
+## Game Header
+
+Every game page displays a header with:
+
+- Team logos, names, and current scores
+- Game status (Preview, Live, or Final)
+- Current inning and outs (for live games)
+- Base runners visualization
+- Balls, strikes, and outs count
+- Breadcrumb navigation to schedule views
+
+<Info>
+Live games automatically update every few seconds without requiring a page refresh.
+</Info>
+
+## Top Performers
+
+For completed and in-progress games, the top performers section highlights standout players:
+
+### Offensive Star
+- Player name and headshot
+- Key hitting stats (HR, RBI, AVG)
+- Notable achievements from the game
+
+### Pitching Star
+- Pitcher name and headshot  
+- Pitching line (IP, H, R, ER, BB, K)
+- Win/loss/save credit
+
+## Win Probability Chart
+
+The interactive win probability graph shows how each team's chances of winning changed throughout the game.
+
+### Chart Features
+
+<CardGroup cols={2}>
+  <Card title="Play-by-Play Tracking">
+    Each scoring play is marked on the chart with the win probability change percentage.
+  </Card>
+  
+  <Card title="Hover Interactions">
+    Hover over plays in the play-by-play list to highlight them on the win probability chart.
+  </Card>
+  
+  <Card title="Timeline">
+    The X-axis shows innings, while the Y-axis displays win probability from 0-100%.
+  </Card>
+  
+  <Card title="Color Coding">
+    The chart uses team colors to show which team has the advantage at each moment.
+  </Card>
+</CardGroup>
+
+<Note>
+Win probability is calculated based on historical game data and the current game situation (score, inning, outs, runners on base).
+</Note>
+
+## Play-by-Play
+
+The play-by-play section provides a chronological list of every at-bat during the game.
+
+### Features
+
+<Tabs>
+  <Tab title="All Plays">
+    View every single play from the game in order, organized by inning:
+    
+    - Inning headers (Top/Bottom 1st, 2nd, etc.)
+    - Play descriptions
+    - Base runner situation before each play
+    - Outs count
+    - Win probability change for scoring plays
+  </Tab>
+  
+  <Tab title="Scoring Plays">
+    Filter to only see plays that resulted in runs:
+    
+    - RBI hits
+    - Home runs
+    - Sacrifice flies
+    - Errors that allowed runs
+    - Each play shows the WP% change
+  </Tab>
+</Tabs>
+
+### Play Information
+
+Each play entry displays:
+
+- **Base Runners**: Visual diagram showing runners on 1st, 2nd, and/or 3rd
+- **Outs**: Count of outs before the play
+- **Description**: Full text description of what happened
+- **WP Impact**: Win probability change (for scoring plays)
+
+<Tip>
+Scoring plays are highlighted in green and show the win probability swing they created.
+</Tip>
+
+## Video Highlights
+
+For games with available video content, the highlights section provides:
+
+### Highlight Features
+
+- Embedded video player with MLB.com highlight clips
+- Theater mode for full-width viewing
+- Play/pause controls
+- Multiple highlight clips from the same game
+- Automatic loading of key moments:
+  - Home runs
+  - Amazing defensive plays
+  - Game-winning hits
+  - Milestone achievements
+
+### Theater Mode
+
+Toggle theater mode to:
+- Expand video to full container width
+- Hide other page elements for distraction-free viewing
+- Maintain aspect ratio for optimal quality
+
+## Box Score
+
+The detailed box score shows complete statistics for both teams.
+
+<AccordionGroup>
+  <Accordion title="Batting Order">
+    Complete batting lineup with:
+    - Position in batting order
+    - Player name with headshot
+    - Position played
+    - At-bats, runs, hits, RBI
+    - Batting average
+    - Link to player profile
+  </Accordion>
+  
+  <Accordion title="Pitching Stats">
+    All pitchers who appeared in the game:
+    - Innings pitched
+    - Hits, runs, earned runs allowed
+    - Walks and strikeouts
+    - Pitch count
+    - Win/loss/save/hold credit
+  </Accordion>
+  
+  <Accordion title="Bench Players">
+    Substitute players and pinch hitters:
+    - Appearance information
+    - Limited stats from this game
+  </Accordion>
+</AccordionGroup>
+
+<Warning>
+If you have spoiler prevention enabled for either team, the box score will be hidden to avoid revealing the outcome.
+</Warning>
+
+## Game Data
+
+Additional game information includes:
+
+### Game Info
+- Date and time
+- Venue and location
+- Attendance
+- Weather conditions
+- Game duration
+- Umpire crew
+
+### Decisions
+
+For completed games:
+- **Winning Pitcher**: Name and pitching line
+- **Losing Pitcher**: Name and pitching line
+- **Save**: Closer who earned the save (if applicable)
+
+### Special Flags
+
+Notable game achievements:
+- Perfect games
+- No-hitters
+- Combined no-hitters
+- Walk-off wins
+
+## Live Game Features
+
+When viewing a game in progress:
+
+<Steps>
+  <Step title="Auto-Refresh">
+    The page automatically updates every few seconds with the latest plays and scores.
+  </Step>
+  
+  <Step title="Current Matchup">
+    See the current batter vs. pitcher matchup with handedness indicators.
+  </Step>
+  
+  <Step title="Live Plays">
+    The most recent plays appear at the bottom of the play-by-play list with smooth animations.
+  </Step>
+  
+  <Step title="Count Updates">
+    Balls, strikes, and outs update in real-time as pitches are thrown.
+  </Step>
+</Steps>
+
+## Preview State
+
+For games that haven't started yet:
+
+- Scheduled start time
+- Probable starting pitchers with recent stats
+- Season records for both teams
+- Recent head-to-head matchup history
+- Venue information
+
+<Card title="Next: Player Stats" icon="user" href="/features/player-stats">
+  Explore detailed player profiles and statistics.
+</Card>

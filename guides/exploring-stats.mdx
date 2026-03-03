@@ -1,0 +1,216 @@
+---
+title: "Navigating Statistics"
+description: "Understand and explore player statistics, year-by-year data, and performance metrics"
+---
+
+## Overview
+
+MLB.TheOhtani.com provides comprehensive statistics for all MLB players, including year-by-year breakdowns, hot/cold zones, and advanced metrics. This guide helps you navigate and understand the available data.
+
+## Finding Players
+
+Start by searching for the player you want to analyze.
+
+<Steps>
+  <Step title="Access Player Search">
+    Navigate to `/player` or click **Players** in the main navigation.
+  </Step>
+  
+  <Step title="Enter Search Query">
+    Type at least 3 letters of a player's name in the search box. Only letters, hyphens, periods, and spaces are allowed.
+  </Step>
+  
+  <Step title="Review Results">
+    Search results display:
+    - Player headshot
+    - Position abbreviation (P, C, 1B, OF, etc.)
+    - Full name
+    - Jersey number (if applicable)
+    - **Active** badge for current players
+    - Compare toggle for each player
+  </Step>
+  
+  <Step title="Select a Player">
+    Click any player name to view their full profile and statistics.
+  </Step>
+</Steps>
+
+<Tip>
+The search displays the total count of players found at the top of the results.
+</Tip>
+
+## Understanding Player Pages
+
+Each player page is organized into several sections.
+
+### Player Header
+
+The top section shows:
+- Player headshot (silo style for active players, spots style for inactive)
+- First name and last name (uses preferred name if available)
+- Team logo and affiliation
+- Compare and favorite toggles
+
+### Player Information
+
+Basic biographical and career information including:
+- Birth date and location
+- Age and physical stats (height, weight)
+- Current team and position
+- Jersey number
+- Career dates
+
+### Roster Entries
+
+Historical team affiliations showing:
+- Teams played for
+- Jersey numbers worn
+- Years active with each team
+
+## Year-by-Year Statistics
+
+The year-by-year section provides season-by-season breakdowns.
+
+<Steps>
+  <Step title="Select Stat Category">
+    Choose between **Hitting** and **Pitching** using the radio buttons. The view defaults to:
+    - Hitting for position players
+    - Pitching for pitchers
+  </Step>
+  
+  <Step title="Choose a Stat">
+    Click any stat abbreviation button at the top:
+    
+    **Hitting stats:**
+    - AVG (batting average)
+    - HR (home runs)
+    - RBI (runs batted in)
+    - H (hits)
+    - 2B (doubles)
+    - 3B (triples)
+    - BB (walks)
+    - SB (stolen bases)
+    - SLG (slugging percentage)
+    
+    **Pitching stats:**
+    - ERA (earned run average)
+    - WHIP (walks + hits per inning)
+    - IP (innings pitched)
+    - K (strikeouts)
+    - BB (walks)
+    - HBP (hit batters)
+    - W (wins)
+    - L (losses)
+    - SV (saves)
+  </Step>
+  
+  <Step title="View Season Data">
+    The selected stat displays across all seasons:
+    - Each bar or data point represents one season
+    - Years are shown chronologically
+    - Hover for detailed values
+    - Drag labels to reorder if needed
+  </Step>
+</Steps>
+
+<Note>
+If a player has no year-by-year data available, you'll see "No year-by-year data" message.
+</Note>
+
+## Hot and Cold Zones
+
+For pitchers, hot/cold zones show performance in different areas of the strike zone.
+
+### How to Read Zone Data
+
+- **Hot zones** - Areas where the pitcher performs well
+- **Cold zones** - Areas where hitters have success
+- Data is visualized on a strike zone grid
+- Different colors indicate performance levels
+
+<Tip>
+Zone data appears in the pitching section and helps identify pitcher strengths and weaknesses.
+</Tip>
+
+## Stat Groups and Types
+
+When viewing statistics, you'll encounter different groupings:
+
+### Stat Groups
+
+- **hitting** - Offensive statistics (batting, base running)
+- **pitching** - Pitching performance metrics
+- **fielding** - Defensive statistics
+
+### Stat Types
+
+Different time periods and contexts:
+- **season** - Single season statistics
+- **seasonAdvanced** - Advanced single-season metrics
+- **careerRegularSeason** - Career totals for regular season
+- **careerAdvanced** - Advanced career metrics
+- **projected** - Statistical projections
+- **byDateRange** - Stats for specific date ranges
+- **vsTeam** - Performance against specific opponents
+
+## Understanding Stat Displays
+
+### Counting Stats vs. Rate Stats
+
+- **Counting stats** increase over time (home runs, hits, strikeouts)
+- **Rate stats** measure efficiency (batting average, ERA, WHIP)
+
+### Better vs. Worse Values
+
+Some stats are better when higher:
+- Batting average, home runs, RBI
+- Strikeouts (for pitchers), wins
+- Slugging percentage, on-base percentage
+
+Some stats are better when lower:
+- ERA (earned run average)
+- WHIP (walks and hits per inning pitched)
+
+<Warning>
+Not all players have complete statistics for all years. Missing data may indicate:
+- Player didn't play that season
+- Data not available from MLB API
+- Player was in minors or other leagues
+</Warning>
+
+## Using Stats for Analysis
+
+### Compare Across Seasons
+
+Use year-by-year data to:
+- Track career progression
+- Identify peak performance years
+- Spot trends and patterns
+- Understand career arcs
+
+### Compare Across Players
+
+Use the comparison tool (see [Comparing Players](/guides/comparing-players)) to:
+- Evaluate multiple players for same stats
+- Compare performance in specific seasons
+- Analyze matchups and head-to-head data
+
+### Combine with Game Data
+
+Cross-reference stats with:
+- Team performance
+- Schedule and opponent data
+- Season context and dates
+
+## No Stats Available?
+
+If you see "No year-by-year data" or empty stat sections:
+
+1. Check if the player is recently added to MLB
+2. Try switching between hitting and pitching views
+3. Verify the player has MLB regular season experience
+4. Some inactive players may have limited historical data
+
+<Card title="Back to Viewing Games" icon="calendar" href="/guides/viewing-games">
+  Return to the games guide to learn about schedule navigation.
+</Card>

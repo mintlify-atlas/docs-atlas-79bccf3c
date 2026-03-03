@@ -1,0 +1,170 @@
+---
+title: "Player Comparison Tools"
+description: "Compare statistics and performance metrics across multiple MLB players"
+---
+
+## Overview
+
+The player comparison tool allows you to analyze up to multiple players side-by-side, comparing their statistics across different time periods and categories.
+
+## Adding Players to Compare
+
+Build your comparison list by selecting players throughout the app.
+
+<Steps>
+  <Step title="Find the Compare Toggle">
+    Look for the split icon (two diverging paths) on player pages and in search results. It's labeled **Compare** on larger screens.
+  </Step>
+  
+  <Step title="Select Players">
+    Click the compare toggle to add a player to your comparison list. The icon will fill in and change color to indicate the player is selected.
+  </Step>
+  
+  <Step title="Track Your Selections">
+    The sidebar shows a **Compare** section with:
+    - Number of players selected in parentheses
+    - Headshots of up to 3 selected players
+    - Direct link to the comparison page
+  </Step>
+</Steps>
+
+<Tip>
+You can add players from search results by clicking the compare toggle next to each player name, making it easy to build comparisons quickly.
+</Tip>
+
+## Using the Comparison Page
+
+Once you've selected players, navigate to the comparison page to analyze their stats.
+
+<Steps>
+  <Step title="Navigate to Compare">
+    Click the **Compare** link in the sidebar or go directly to `/player/compare`.
+  </Step>
+  
+  <Step title="Select Stat Group">
+    Choose your stat category from the **Group** dropdown:
+    - **hitting** - Batting statistics
+    - **pitching** - Pitching performance
+    - **fielding** - Defensive metrics
+  </Step>
+  
+  <Step title="Choose Stats to Display">
+    In the **Stats** section:
+    - Browse available statistics for your selected group
+    - Check boxes next to stats you want to compare
+    - Use **Toggle all** to quickly select/deselect all stats
+    - Stats are organized in columns for easy scanning
+  </Step>
+  
+  <Step title="Select Time Period">
+    Choose from the **Types** dropdown:
+    - **Season** - Specific season stats (requires season selection)
+    - **Career** - Career regular season totals
+    - **Projected** - Projected statistics
+    - **By date range** - Custom date range (requires start/end dates)
+    - **vs Team** - Performance against specific team
+  </Step>
+</Steps>
+
+## Customizing Comparisons
+
+### Filtering by Season
+
+When selecting **Season** or **Projected** type:
+1. The **Season Picker** appears below the type selector
+2. Click left/right arrows to navigate between seasons
+3. Stats automatically update for the selected season
+
+### Filtering by Date Range
+
+For **By date range** comparisons:
+1. Enter **Start Date** in YYYY-MM-DD format
+2. Enter **End Date** in the same format
+3. Date range is limited from 1901-01-01 to next year
+
+### Filtering by Opposing Team
+
+For **vs Team** comparisons:
+1. Select a team from the **opposingTeamId** dropdown
+2. Choose **All teams** to see stats against all opponents
+3. Teams are listed alphabetically by abbreviation
+
+## Reading the Comparison Table
+
+The comparison interface displays:
+
+<Steps>
+  <Step title="Player Columns">
+    Each player appears in their own column with:
+    - Player headshot
+    - Full name (clickable link to profile)
+    - Stat values in rows below
+  </Step>
+  
+  <Step title="Stat Rows">
+    Each row represents one selected statistic:
+    - Stat name appears in the leftmost column
+    - Values display in lowercase with first letter capitalized
+    - Best values are highlighted with accent background color
+  </Step>
+  
+  <Step title="Best Value Highlighting">
+    The system automatically identifies the best value for each stat:
+    - Higher is better for most stats (home runs, batting average, etc.)
+    - Lower is better for some stats (ERA, WHIP, etc.)
+    - Best values show with colored background
+  </Step>
+</Steps>
+
+<Note>
+The table scrolls horizontally on mobile devices to accommodate multiple players. Swipe left/right to view all columns.
+</Note>
+
+## Managing Your Comparison List
+
+### Removing Players
+
+To remove a player from comparison:
+1. Navigate to their player page
+2. Click the filled compare icon to deselect them
+3. They'll be removed from the comparison page automatically
+
+### Clearing All Players
+
+Remove players individually - there's no bulk clear option. Simply deselect the compare toggle on each player's page.
+
+## Advanced Features
+
+### Available Statistics
+
+The stats selector shows only stats relevant to the selected group (hitting, pitching, fielding) and filters to enabled statistics from the MLB API.
+
+Common hitting stats include:
+- avg (batting average)
+- homeRuns
+- rbi (runs batted in)
+- hits
+- stolenBases
+- slg (slugging percentage)
+
+Common pitching stats include:
+- era (earned run average)
+- whip (walks + hits per inning pitched)
+- strikeOuts
+- wins/losses
+- saves
+
+### URL Persistence
+
+Your comparison selections are saved to the URL, allowing you to:
+- Bookmark specific comparisons
+- Share comparison links with others
+- Navigate back to previous comparisons
+
+<Warning>
+If no players are selected, the comparison page shows "No players to compare". Add at least one player to see comparison data.
+</Warning>
+
+<Card title="Next: Explore Statistics" icon="chart-line" href="/guides/exploring-stats">
+  Learn how to navigate and understand player statistics throughout the app.
+</Card>

@@ -1,0 +1,640 @@
+---
+title: MLB Stats API Endpoints
+description: Complete reference of available MLB Stats API endpoints organized by category
+---
+
+## Overview
+
+This page documents all MLB Stats API endpoints available in the application. Each endpoint includes a description, required parameters, and common use cases.
+
+<Note>
+All endpoints are relative to the base URL: `https://statsapi.mlb.com`
+</Note>
+
+## Sport
+
+### List Sports
+
+```
+GET /api/v1/sports
+```
+
+List all sports with their IDs (MLB=1, AAA=11, etc.) and basic metadata.
+
+**Example Response:**
+```json
+{
+  "sports": [
+    { "id": 1, "code": "mlb", "name": "Major League Baseball" },
+    { "id": 11, "code": "aaa", "name": "Triple-A" }
+  ]
+}
+```
+
+### Get Divisions
+
+```
+GET /api/v1/divisions
+```
+
+Get division info (AL East, NL West, etc.) with standings order; filter by league and season.
+
+<ParamField query="leagueId" type="string">
+  Filter by league: `103` (AL), `104` (NL)
+</ParamField>
+
+<ParamField query="season" type="string">
+  Year for division alignment
+</ParamField>
+
+### Get Leagues
+
+```
+GET /api/v1/leagues
+```
+
+Get league details (American/National) including season dates and structure.
+
+<ParamField query="leagueIds" type="string">
+  Comma-separated league IDs
+</ParamField>
+
+## Schedule
+
+### Get Schedule
+
+```
+GET /api/v1/schedule
+```
+
+Get game schedules by date, date range, team, or venue; returns gamePk IDs needed for other endpoints.
+
+<ParamField query="sportId" type="string" required>
+  Sport ID (1=MLB)
+</ParamField>
+
+<ParamField query="date" type="string">
+  Specific date (YYYY-MM-DD)
+</ParamField>
+
+<ParamField query="startDate" type="string">
+  Start of date range
+</ParamField>
+
+<ParamField query="endDate" type="string">
+  End of date range
+</ParamField>
+
+<ParamField query="teamId" type="string">
+  Filter by team ID
+</ParamField>
+
+<ParamField query="venueIds" type="string">
+  Filter by venue ID(s)
+</ParamField>
+
+<ParamField query="fields" type="string">
+  Field filtering (e.g., `"dates,games,officialDate,teams,team,name"`)
+</ParamField>
+
+### Get Postseason Schedule
+
+```
+GET /api/v1/schedule/postseason
+```
+
+Get postseason bracket and series info (World Series, LCS, LDS); includes series status and game results.
+
+<ParamField query="gameTypes" type="string">
+  Filter by game type: `W` (World Series), `L` (LCS), `D` (LDS)
+</ParamField>
+
+<ParamField query="season" type="string" required>
+  Postseason year
+</ParamField>
+
+<ParamField query="teamId" type="string">
+  Filter by team ID
+</ParamField>
+
+## Game
+
+### Get Live Game Feed
+
+```
+GET /api/v1.1/game/{gamePk}/feed/live
+```
+
+Complete live game feed with all plays, runners, count, matchups; use timecode to get state at specific moment.
+
+<ParamField path="gamePk" type="string" required>
+  Game primary key (e.g., `813024`)
+</ParamField>
+
+<ParamField query="timecode" type="string">
+  Get game state at specific time (format: `YYYYMMDD_HHMMSS`)
+</ParamField>
+
+<ParamField query="fields" type="string">
+  Field filtering
+</ParamField>
+
+### Get Boxscore
+
+```
+GET /api/v1/game/{gamePk}/boxscore
+```
+
+Traditional box score with batting/pitching lines, player stats, and game totals for a specific game.
+
+<ParamField path="gamePk" type="string" required>
+  Game primary key
+</ParamField>
+
+### Get Linescore
+
+```
+GET /api/v1/game/{gamePk}/linescore
+```
+
+Inning-by-inning runs, hits, errors; current inning state for live games.
+
+<ParamField path="gamePk" type="string" required>
+  Game primary key
+</ParamField>
+
+### Get Game Content
+
+```
+GET /api/v1/game/{gamePk}/content
+```
+
+Game media content including highlight videos, editorial recap, and photo galleries.
+
+<ParamField path="gamePk" type="string" required>
+  Game primary key
+</ParamField>
+
+### Get Context Metrics
+
+```
+GET /api/v1/game/{gamePk}/contextMetrics
+```
+
+Advanced context stats like leverage index, win expectancy, and championship probability added.
+
+<ParamField path="gamePk" type="string" required>
+  Game primary key
+</ParamField>
+
+### Get Win Probability
+
+```
+GET /api/v1/game/{gamePk}/winProbability
+```
+
+Win probability after each play; shows how each at-bat shifted the odds for home/away teams.
+
+<ParamField path="gamePk" type="string" required>
+  Game primary key
+</ParamField>
+
+### Get Play by Play
+
+```
+GET /api/v1/game/{gamePk}/playByPlay
+```
+
+Chronological list of all plays with descriptions; lighter than live feed for historical games.
+
+<ParamField path="gamePk" type="string" required>
+  Game primary key
+</ParamField>
+
+### Get Game Changes
+
+```
+GET /api/v1/game/changes
+```
+
+List of games updated since a given date/time; useful for syncing or tracking postponements.
+
+<ParamField query="sportId" type="string" required>
+  Sport ID
+</ParamField>
+
+<ParamField query="updatedSince" type="string" required>
+  ISO date to check for updates
+</ParamField>
+
+### Get Game Pace
+
+```
+GET /api/v1/gamePace
+```
+
+Pace of play statistics for a season: average game time, pitches per game, time between pitches.
+
+<ParamField query="sportId" type="string" required>
+  Sport ID
+</ParamField>
+
+<ParamField query="season" type="string" required>
+  Season year
+</ParamField>
+
+## Teams
+
+### List Teams
+
+```
+GET /api/v1/teams
+```
+
+List all teams with IDs, names, abbreviations, venue, and league/division info; filter by sport and season.
+
+<ParamField query="sportId" type="string">
+  Filter by sport ID
+</ParamField>
+
+<ParamField query="season" type="string">
+  Filter by season year
+</ParamField>
+
+### Get Team Details
+
+```
+GET /api/v1/teams/{teamId}
+```
+
+Detailed team info: full name, venue, league, division, first year, and social media links.
+
+<ParamField path="teamId" type="string" required>
+  Team ID (e.g., `119` for Dodgers)
+</ParamField>
+
+### Get Team Roster
+
+```
+GET /api/v1/teams/{teamId}/roster
+```
+
+Current or historical roster with player IDs, positions, jersey numbers, and status.
+
+<ParamField path="teamId" type="string" required>
+  Team ID
+</ParamField>
+
+<ParamField query="season" type="string">
+  Season year for roster
+</ParamField>
+
+<ParamField query="hydrate" type="string">
+  Set to `"person"` to include player details
+</ParamField>
+
+### Get Team Coaches
+
+```
+GET /api/v1/teams/{teamId}/coaches
+```
+
+Current coaching staff with coach IDs, names, positions, and status.
+
+<ParamField path="teamId" type="string" required>
+  Team ID
+</ParamField>
+
+<ParamField query="season" type="string">
+  Season year for coaching staff
+</ParamField>
+
+### Get Team History
+
+```
+GET /api/v1/teams/{teamId}/history
+```
+
+Franchise history including former names, cities, leagues, and championship seasons.
+
+<ParamField path="teamId" type="string" required>
+  Team ID
+</ParamField>
+
+### Get Team Affiliates
+
+```
+GET /api/v1/teams/{teamId}/affiliates
+```
+
+Minor league affiliates (AAA, AA, A+, A, Rookie) with team names and league info.
+
+<ParamField path="teamId" type="string" required>
+  Team ID
+</ParamField>
+
+## People
+
+### Get Person Details
+
+```
+GET /api/v1/people/{personId}
+```
+
+Player bio: birthDate, birthCity, height, weight, position, bats/throws, draft info, MLB debut date.
+
+<ParamField path="personId" type="string" required>
+  Player ID (e.g., `660271` for Shohei Ohtani)
+</ParamField>
+
+<ParamField query="hydrate" type="string">
+  Add related data (e.g., `"currentTeam"`)
+</ParamField>
+
+### Get Person Stats
+
+```
+GET /api/v1/people/{personId}/stats
+```
+
+Player statistics: season or career totals for hitting/pitching/fielding; filter by gameType (regular/postseason).
+
+<ParamField path="personId" type="string" required>
+  Player ID
+</ParamField>
+
+<ParamField query="stats" type="string" required>
+  Stat type: `season`, `career`, `hotColdZones`
+</ParamField>
+
+<ParamField query="group" type="string" required>
+  Stat group: `hitting`, `pitching`, `fielding`
+</ParamField>
+
+<ParamField query="seasons" type="string">
+  Comma-separated years or single year
+</ParamField>
+
+<ParamField query="gameType" type="string">
+  Filter by game type: `R` (regular), `P` (playoffs)
+</ParamField>
+
+### Get Person Game Stats
+
+```
+GET /api/v1/people/{personId}/stats/game/{gamePk}
+```
+
+Player's stats from a specific game: at-bats, hits, RBIs, innings pitched, strikeouts, etc.
+
+<ParamField path="personId" type="string" required>
+  Player ID
+</ParamField>
+
+<ParamField path="gamePk" type="string" required>
+  Game primary key
+</ParamField>
+
+### Get Free Agents
+
+```
+GET /api/v1/people/freeAgents
+```
+
+List of free agents for a given offseason with their previous team and contract status.
+
+<ParamField query="season" type="string" required>
+  Offseason year
+</ParamField>
+
+### Get People Changes
+
+```
+GET /api/v1/people/changes
+```
+
+Players whose records changed since a date; useful for tracking roster moves and data updates.
+
+<ParamField query="updatedSince" type="string" required>
+  ISO date to check for updates
+</ParamField>
+
+### Search People
+
+```
+GET /api/v1/people/search
+```
+
+Search players by name (partial match); use this first to find personId for other queries.
+
+<ParamField query="names" type="string" required>
+  Player name or partial name
+</ParamField>
+
+## Standings
+
+### Get Standings
+
+```
+GET /api/v1/standings
+```
+
+Current standings with W-L record, PCT, GB, streak, last 10, home/away splits by league/division.
+
+<ParamField query="leagueId" type="string" required>
+  League ID: `103` (AL), `104` (NL), `103,104` (both)
+</ParamField>
+
+<ParamField query="season" type="string" required>
+  Season year
+</ParamField>
+
+## Stats
+
+### Get Stats
+
+```
+GET /api/v1/stats
+```
+
+General stats query for aggregated league-wide statistics by season and stat group.
+
+<ParamField query="stats" type="string" required>
+  Stat type: `season`, `career`
+</ParamField>
+
+<ParamField query="group" type="string" required>
+  Stat group: `hitting`, `pitching`, `fielding`
+</ParamField>
+
+<ParamField query="season" type="string" required>
+  Season year
+</ParamField>
+
+### Get Leaders
+
+```
+GET /api/v1/stats/leaders
+```
+
+League leaders in specific categories (HR, AVG, ERA, etc.); regular season or playoffs.
+
+<ParamField query="leaderCategories" type="string" required>
+  Stat category: `homeRuns`, `battingAverage`, `earnedRunAverage`, etc.
+</ParamField>
+
+<ParamField query="leaderGameTypes" type="string" required>
+  Game type: `R` (regular season), `P` (playoffs)
+</ParamField>
+
+<ParamField query="statGroup" type="string" required>
+  Stat group: `hitting`, `pitching`
+</ParamField>
+
+<ParamField query="season" type="string" required>
+  Season year
+</ParamField>
+
+## Other
+
+### Get Seasons
+
+```
+GET /api/v1/seasons
+```
+
+Season metadata: regular season start/end dates, All-Star date, postseason dates, spring training info.
+
+<ParamField query="sportId" type="string" required>
+  Sport ID
+</ParamField>
+
+<ParamField query="season" type="string" required>
+  Season year
+</ParamField>
+
+### Get Venues
+
+```
+GET /api/v1/venues
+```
+
+Ballpark info: location, capacity, dimensions, surface type, roof type, and timezone.
+
+<ParamField query="venueIds" type="string" required>
+  Comma-separated venue IDs
+</ParamField>
+
+### Get Draft
+
+```
+GET /api/v1/draft/{year}
+```
+
+MLB Draft results by year: all rounds and picks with player info, school, and signing bonus.
+
+<ParamField path="year" type="string" required>
+  Draft year
+</ParamField>
+
+### Get Transactions
+
+```
+GET /api/v1/transactions
+```
+
+Roster transactions: trades, signings, DFA, IL moves, call-ups; filter by team, player, or date range.
+
+<ParamField query="sportId" type="string" required>
+  Sport ID
+</ParamField>
+
+<ParamField query="teamId" type="string">
+  Filter by team ID
+</ParamField>
+
+<ParamField query="playerId" type="string">
+  Filter by player ID
+</ParamField>
+
+<ParamField query="date" type="string">
+  Specific date
+</ParamField>
+
+<ParamField query="startDate" type="string">
+  Start of date range
+</ParamField>
+
+<ParamField query="endDate" type="string">
+  End of date range
+</ParamField>
+
+### Get Jobs
+
+```
+GET /api/v1/jobs/{jobType}
+```
+
+Game officials by type: umpire crews, official scorers, and datacasters assigned to games.
+
+<ParamField path="jobType" type="string" required>
+  Job type: `umpires`, `officialScorers`, `datacasters`
+</ParamField>
+
+<ParamField query="date" type="string" required>
+  Date for assignments
+</ParamField>
+
+### Get Uniforms
+
+```
+GET /api/v1/uniforms/game
+```
+
+Uniform details for specific games: jersey style, cap, pants, and special event gear.
+
+<ParamField query="gamePks" type="string" required>
+  Comma-separated game IDs
+</ParamField>
+
+### Get Attendance
+
+```
+GET /api/v1/attendance
+```
+
+Attendance figures by team and season: total, average, home/away, and capacity percentage.
+
+<ParamField query="teamId" type="string" required>
+  Team ID
+</ParamField>
+
+<ParamField query="season" type="string" required>
+  Season year
+</ParamField>
+
+## Meta
+
+### Get Baseball Stats
+
+```
+GET /api/v1/baseballStats
+```
+
+All available stat types and categories (homeRuns, battingAverage, era, wins, etc.) used in stats endpoints.
+
+### Get Game Status
+
+```
+GET /api/v1/gameStatus
+```
+
+All possible game status codes (Scheduled, In Progress, Final, Postponed, etc.) with descriptions.
+
+### Get Game Types
+
+```
+GET /api/v1/gameTypes
+```
+
+Game type codes: R=Regular Season, S=Spring Training, P=Playoffs, W=World Series, etc.

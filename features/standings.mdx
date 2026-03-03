@@ -1,0 +1,238 @@
+---
+title: 'Team Standings'
+description: 'Current MLB standings with divisional rankings, win-loss records, and playoff positioning'
+---
+
+## Overview
+
+The standings page displays up-to-date team rankings for all MLB divisions, showing wins, losses, winning percentage, games back, and current streaks.
+
+## Page Layout
+
+Standings are organized by league and division:
+
+<Steps>
+  <Step title="American League">
+    - AL East
+    - AL Central
+    - AL West
+  </Step>
+  
+  <Step title="National League">
+    - NL East
+    - NL Central
+    - NL West
+  </Step>
+</Steps>
+
+## Season Selection
+
+View standings from any season:
+
+- Current season loads by default
+- Dropdown selector for historical seasons
+- Navigate between regular season and postseason standings
+- Standings update in real-time during the current season
+
+## Game Type Filter
+
+Filter standings by game type:
+
+<Tabs>
+  <Tab title="Regular Season">
+    Standard season standings showing the path to playoff positioning.
+  </Tab>
+  
+  <Tab title="Spring Training">
+    Preseason exhibition game records (wins/losses don't affect regular season).
+  </Tab>
+  
+  <Tab title="Postseason">
+    Playoff performance and advancement tracking.
+  </Tab>
+</Tabs>
+
+## Division Tables
+
+Each division displays in a dedicated table with the following columns:
+
+### Team Column
+
+Team information includes:
+
+- Team logo (color-coded by primary team color)
+- Team city or full name
+- Interactive links to team pages
+- Sticky positioning when scrolling horizontally
+
+<Tip>
+Click any team name to view their full roster, schedule, and team statistics.
+</Tip>
+
+### W-L (Wins-Losses)
+
+The win-loss record shows:
+
+- **Wins** in green (positive indicator)
+- **Losses** in red (negative indicator)
+- Format: `W-L` (e.g., "95-67")
+- Tabular numerals for proper alignment
+
+### Win Percentage
+
+Three-digit percentage showing:
+
+- Winning percentage (wins ÷ games played)
+- Color coding:
+  - Green for .500 or above
+  - Red for below .500
+- Format: `.XXX` (e.g., ".586")
+
+### GB (Games Back)
+
+Games behind the division leader:
+
+- "-" for the first-place team
+- Numeric value for all other teams
+- Shows how many games behind in the standings
+- Calculated as: `(Leader Wins - Team Wins) - (Leader Losses - Team Losses)) ÷ 2`
+
+<Note>
+A team 3.5 games back would need to win 4 games while the leader loses 3 to catch up (assuming equal games played).
+</Note>
+
+### Streak
+
+Current win/loss streak:
+
+- **W** prefix for winning streaks (green)
+- **L** prefix for losing streaks (red)
+- Number indicates consecutive games
+- Examples: `W5`, `L2`
+
+### League Rank
+
+Overall ranking within the league (AL or NL):
+
+- Numbers 1-15
+- Indicates standing among all teams in league
+- Used for Wild Card tiebreaker scenarios
+
+## Interactive Features
+
+<CardGroup cols={2}>
+  <Card title="Row Highlighting">
+    Hover over any team row to highlight it across all columns for easier reading.
+  </Card>
+  
+  <Card title="Responsive Design">
+    Tables adapt to mobile screens with horizontal scrolling while keeping team names visible.
+  </Card>
+  
+  <Card title="Real-time Updates">
+    Standings refresh automatically as games complete during the season.
+  </Card>
+  
+  <Card title="Historical Access">
+    View final standings from previous seasons for historical reference.
+  </Card>
+</CardGroup>
+
+## Division Headers
+
+Each division table includes:
+
+- Division name (e.g., "AL East", "NL Central")
+- Visual separation between divisions
+- Consistent formatting across all divisions
+
+## Understanding Standings
+
+### Playoff Implications
+
+<AccordionGroup>
+  <Accordion title="Division Winners">
+    The team with the best record in each division (3 per league) automatically qualifies for the playoffs.
+  </Accordion>
+  
+  <Accordion title="Wild Card Teams">
+    The next best teams by record (regardless of division) qualify as Wild Card entries. Games Back helps determine Wild Card positioning.
+  </Accordion>
+  
+  <Accordion title="Tiebreakers">
+    When teams have identical records, the league rank column reflects tiebreaker criteria like head-to-head record.
+  </Accordion>
+</AccordionGroup>
+
+### Streak Interpretation
+
+- **W1**: Won their last game
+- **W5**: Won their last 5 games consecutively
+- **L3**: Lost their last 3 games consecutively
+
+Streaks reset when the opposite result occurs (a loss after wins, or a win after losses).
+
+## Color Coding
+
+The standings use color to communicate information quickly:
+
+<CardGroup cols={3}>
+  <Card title="Green/Positive" icon="check">
+    - Wins
+    - Above .500 percentages
+    - Winning streaks
+  </Card>
+  
+  <Card title="Red/Negative" icon="xmark">
+    - Losses
+    - Below .500 percentages
+    - Losing streaks
+  </Card>
+  
+  <Card title="Gray/Neutral" icon="minus">
+    - Division leader (no games back)
+    - League rank
+    - Headers
+  </Card>
+</CardGroup>
+
+## Structured Data
+
+Standings pages include rich schema.org markup:
+
+- ItemList structure for search engines
+- Team standings as list items
+- Position information for each team
+- Full records and percentages
+- Links to team pages
+
+This enables:
+- Rich search results
+- Voice assistant queries ("What are the current AL East standings?")
+- Social media previews
+
+## Responsive Layout
+
+### Desktop View
+- Three-column grid (3 divisions per row)
+- Full table widths
+- All columns visible simultaneously
+
+### Tablet View
+- Two-column grid (2 divisions per row)
+- Compact spacing
+- Horizontal scroll for table details
+
+### Mobile View
+- Single-column stack
+- Sticky team names
+- Swipe to view additional columns
+- Optimized for portrait orientation
+
+<Warning>
+Standings reflect official MLB records and may include adjustments for postponed/suspended games.
+</Warning>
+
+<Card title="Next: Transactions" icon="exchange" href="/features/transactions">
+  Track player moves, signings, and roster changes.
+</Card>

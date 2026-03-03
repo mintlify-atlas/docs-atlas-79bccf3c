@@ -1,0 +1,496 @@
+---
+title: UI Component Architecture
+description: Design patterns, component structure, and usage guidelines for the UI layer
+---
+
+MLB.TheOhtani.com's UI is built with Svelte 5 components organized into feature-based modules.
+
+## Component Philosophy
+
+Our components follow these principles:
+
+1. **Single Responsibility** - Each component has one clear purpose
+2. **Type Safety** - Full TypeScript integration with props validation
+3. **Composability** - Small components combine to create complex UIs
+4. **Accessibility** - Semantic HTML and ARIA attributes
+5. **Performance** - Minimal re-renders using Svelte's reactivity
+
+## Component Organization
+
+Components are organized by feature domain in `src/ui/`:
+
+```
+ui/
+├── game/           # Game-specific components
+├── team/           # Team-related components
+├── player/         # Player profiles and stats
+├── stats/          # Statistical visualizations
+├── schedule/       # Schedule and calendar
+├── sidebar/        # Navigation and settings
+├── season/         # Season information
+├── transactions/   # Transaction feeds
+├── playground/     # API playground tools
+├── icons/          # SVG icon library
+└── spoiler-prevention/  # Spoiler settings
+```
+
+## Svelte 5 Patterns
+
+### Runes-Based Reactivity
+
+Components use Svelte 5's runes for state management:
+
+#### `$state` - Reactive State
+
+```svelte
+<script lang="ts">
+  let count = $state(0)
+  
+  function increment() {
+    count++
+  }
+</script>
+
+<button onclick={increment}>
+  Count: {count}
+</button>
+```
+
+#### `$derived` - Computed Values
+
+```svelte
+<script lang="ts">
+  let firstName = $state('Shohei')
+  let lastName = $state('Ohtani')
+  
+  let fullName = $derived(`${firstName} ${lastName}`)
+</script>
+
+<p>{fullName}</p>
+```
+
+#### `$effect` - Side Effects
+
+```svelte
+<script lang="ts">
+  let data = $state(null)
+  
+  $effect(() => {
+    fetchData().then(result => {
+      data = result
+    })
+  })
+</script>
+```
+
+#### `$props` - Component Props
+
+```svelte
+<script lang="ts">
+  interface Props {
+    playerId: number
+    season?: string
+  }
+  
+  let { playerId, season = '2024' }: Props = $props()
+</script>
+
+<div>
+  Player: {playerId} | Season: {season}
+</div>
+```
+
+### Snippets
+
+Reusable template fragments:
+
+```svelte
+<script lang="ts">
+  interface Props {
+    items: string[]
+  }
+  
+  let { items }: Props = $props()
+</script>
+
+{#snippet listItem(item: string)}
+  <li class="px-4 py-2">{item}</li>
+{/snippet}
+
+<ul>
+  {#each items as item}
+    {@render listItem(item)}
+  {/each}
+</ul>
+```
+
+## Global State Management
+
+### Color Scheme Store
+
+`src/ui/store.svelte.ts` manages theme preferences:
+
+```typescript
+import { browser } from '$app/environment'
+
+export const colorSchemeStore = $state({
+  colorScheme: browser ? localStorage.getItem('color-scheme') || 'auto' : 'auto',
+  
+  get mode() {
+    if (browser) {
+      return this.colorScheme === 'auto'
+        ? window.matchMedia('(prefers-color-scheme: dark)').matches
+          ? 'dark'
+          : 'light'
+        : this.colorScheme
+    }
+    return this.colorScheme
+  },
+})
+```
+
+### Schedule Navigation Store
+
+`src/ui/schedule/store.svelte.ts` manages date selection and navigation state.
+
+### Spoiler Prevention Store
+
+`src/ui/spoiler-prevention/store.svelte.ts` controls score hiding functionality.
+
+## Component Categories
+
+### Game Components
+
+Display live and historical game data.
+
+**Key Components:**
+- `game/status.svelte` - Game state (Preview, Live, Final)
+- `game/team-scores.svelte` - Current score display
+- `game/linescore.svelte` - Inning-by-inning scoring
+- `game/plays.svelte` - Play-by-play feed
+- `game/win-probability.svelte` - Win probability visualization
+- `game/top-performers.svelte` - Best players of the game
+
+**Props Pattern:**
+```typescript
+interface GameProps {
+  gamePk: number
+  liveData?: MLB.LiveData
+  gameData?: MLB.GameData
+}
+```
+
+### Team Components
+
+Team branding and information.
+
+**Key Components:**
+- `team/logo.svelte` - Team logo with fallback
+- `team/roster.svelte` - Active roster display
+- `team/styled-team.svelte` - Team-colored theming
+- `team/team-calendar.svelte` - Team-specific schedule
+
+**Usage:**
+```svelte
+<script>
+  import Logo from '$ui/team/logo.svelte'
+</script>
+
+<Logo teamId={108} size="large" />
+```
+
+### Player Components
+
+Player profiles and statistics.
+
+**Key Components:**
+- `player/headshot.svelte` - Player photo with fallback
+- `player/player-info.svelte` - Bio and details
+- `player/search.svelte` - Player search interface
+- `player/hot-cold-zones-list.svelte` - Batting zone data
+
+**Type Safety:**
+```typescript
+interface PlayerProps {
+  person: MLB.Person
+  stats?: MLB.PlayerStats
+  showDetails?: boolean
+}
+```
+
+### Stats Components
+
+Statistical visualizations and data displays.
+
+**Key Components:**
+- `stats/year-by-year.svelte` - Career stats table
+- `stats/hot-cold-zones.svelte` - Zone heat maps
+- `stats/strikezone.svelte` - Strike zone visualization
+- `stats/season-picker.svelte` - Season selection
+
+**Visualization:**
+Components use CSS and SVG for data visualization, avoiding heavy charting libraries.
+
+### Schedule Components
+
+Calendar and date navigation.
+
+**Key Components:**
+- `schedule/calendar.svelte` - Full calendar view
+- `schedule/date-picker.svelte` - Single date selector
+- `schedule/week-picker.svelte` - Week navigation
+- `schedule/month-picker-with-year.svelte` - Month/year combo
+
+**State Integration:**
+```typescript
+import { scheduleStore } from '$ui/schedule/store.svelte'
+
+let { selectedDate } = scheduleStore
+```
+
+### Icon System
+
+SVG icon components in `ui/icons/`.
+
+**Icon Categories:**
+- **Baseball:** ball, bat, diamond, helmet, jersey
+- **Navigation:** chevron-left, chevron-right, arrows
+- **UI Controls:** expand, collapse, eye, star, search
+- **Theme:** sun, moon, sidebar
+- **Data:** calendar, rank, info, flag
+
+**Usage:**
+```svelte
+<script>
+  import { Ball, Bat, Star } from '$ui/icons'
+</script>
+
+<Ball class="w-6 h-6 text-blue-500" />
+```
+
+**Icon Exports:**
+```typescript
+// ui/icons/index.ts
+export { default as Ball } from './ball.svelte'
+export { default as Bat } from './bat.svelte'
+export { default as Star } from './star.svelte'
+// ... all icons
+```
+
+### Sidebar Components
+
+Navigation and application settings.
+
+**Key Components:**
+- `sidebar/drawer.svelte` - Collapsible sidebar container
+- `sidebar/nav.svelte` - Main navigation menu
+- `sidebar/toggle-color-scheme.svelte` - Dark/light mode toggle
+- `sidebar/favorites-list.svelte` - Favorite teams management
+- `sidebar/compare-list.svelte` - Team comparison tool
+
+**Interactive Elements:**
+Sidebar uses Svelte transitions and animations for smooth UX.
+
+### Playground Components
+
+API exploration and testing tools.
+
+**Key Components:**
+- `playground/select-endpoint.svelte` - Endpoint dropdown
+- `playground/parameters-table.svelte` - Parameter configuration
+- `playground/response.svelte` - JSON response viewer
+
+**Constants:**
+```typescript
+// playground/constants.ts
+export const HOST = 'https://statsapi.mlb.com'
+export const ENDPOINTS = [...]
+```
+
+## Styling Patterns
+
+### Tailwind Utilities
+
+Components use Tailwind CSS classes:
+
+```svelte
+<div class="rounded-lg border border-gray-200 dark:border-gray-800 p-4">
+  <h2 class="text-xl font-bold mb-2">Title</h2>
+  <p class="text-gray-600 dark:text-gray-400">Content</p>
+</div>
+```
+
+### Conditional Classes
+
+Using `clsx` and `tailwind-merge`:
+
+```svelte
+<script lang="ts">
+  import { cn } from '$lib/utils'
+  
+  let { variant = 'default', className = '' }: Props = $props()
+  
+  const classes = cn(
+    'px-4 py-2 rounded',
+    variant === 'primary' && 'bg-blue-500 text-white',
+    variant === 'secondary' && 'bg-gray-200 text-gray-900',
+    className
+  )
+</script>
+
+<button class={classes}>
+  <slot />
+</button>
+```
+
+### Theme-Aware Styling
+
+Dark mode support through Tailwind's `dark:` prefix:
+
+```svelte
+<div class="bg-white dark:bg-gray-900">
+  <p class="text-gray-900 dark:text-gray-100">Text</p>
+</div>
+```
+
+## Data Fetching in Components
+
+### Live Data Integration
+
+Components can subscribe to live data:
+
+```svelte
+<script lang="ts">
+  import { fetchMLB } from '$lib/fetch'
+  
+  let { gamePk }: Props = $props()
+  
+  // Live polling
+  const gameData = fetchMLB.live<MLB.LiveGameFeed>(
+    `/api/v1.1/game/${gamePk}/feed/live`,
+    {}
+  )
+</script>
+
+{#if $gameData}
+  <div>{$gameData.gameData.status.detailedState}</div>
+{/if}
+```
+
+### Load Function Data
+
+Components receive data from SvelteKit's `load` functions:
+
+```svelte
+<script lang="ts">
+  import type { PageData } from './$types'
+  
+  let { data }: { data: PageData } = $props()
+</script>
+
+<div>
+  {data.game.gameData.teams.home.name}
+</div>
+```
+
+## Accessibility
+
+### Semantic HTML
+
+Components use proper HTML elements:
+
+```svelte
+<nav aria-label="Main navigation">
+  <ul>
+    <li><a href="/schedule">Schedule</a></li>
+    <li><a href="/standings">Standings</a></li>
+  </ul>
+</nav>
+```
+
+### ARIA Attributes
+
+Accessibility attributes for screen readers:
+
+```svelte
+<button
+  aria-label="Toggle dark mode"
+  aria-pressed={isDark}
+  onclick={toggle}
+>
+  <Sun />
+</button>
+```
+
+### Keyboard Navigation
+
+Interactive elements support keyboard control:
+
+```svelte
+<div
+  role="button"
+  tabindex="0"
+  onkeydown={(e) => e.key === 'Enter' && handleClick()}
+  onclick={handleClick}
+>
+  Click me
+</div>
+```
+
+## Performance Optimization
+
+### Lazy Loading
+
+Components are code-split automatically by SvelteKit:
+
+```typescript
+const HeavyComponent = import('./heavy-component.svelte')
+```
+
+### Memoization
+
+Expensive computations use `$derived`:
+
+```svelte
+<script>
+  let items = $state([...])
+  
+  let sortedItems = $derived(
+    items.toSorted((a, b) => a.value - b.value)
+  )
+</script>
+```
+
+### Event Delegation
+
+List components use delegation for better performance:
+
+```svelte
+<ul onclick={handleListClick}>
+  {#each items as item}
+    <li data-id={item.id}>{item.name}</li>
+  {/each}
+</ul>
+```
+
+## Testing Patterns
+
+Components are designed for testability:
+
+- **Pure logic** extracted to utility functions
+- **Props-driven** rendering for easy testing
+- **Minimal side effects** in component code
+- **Type safety** catches errors at compile time
+
+## Best Practices
+
+1. **Keep components small** - Under 200 lines when possible
+2. **Extract utilities** - Move complex logic to `$lib/`
+3. **Type everything** - Use TypeScript interfaces for all props
+4. **Use runes** - Leverage Svelte 5's reactivity system
+5. **Compose components** - Build complex UIs from simple parts
+6. **Follow conventions** - Match existing patterns in the codebase
+7. **Consider accessibility** - Add ARIA labels and keyboard support
+8. **Optimize images** - Use proper loading strategies
+9. **Handle loading states** - Show feedback during data fetches
+10. **Test edge cases** - Handle missing/null data gracefully

@@ -1,0 +1,276 @@
+---
+title: 'Player Transactions'
+description: 'Track MLB player transactions including trades, signings, releases, and roster moves'
+---
+
+## Overview
+
+The transactions page tracks all official MLB player movement including trades, free agent signings, waivers, designations, option assignments, and other roster changes.
+
+## Weekly Transaction View
+
+Transactions are organized by week for easy browsing:
+
+- 7-day windows of transaction activity
+- Grouped by date within the week
+- Automatic expansion of today's transactions
+- Navigate between weeks using the week picker
+
+## Navigation Controls
+
+The page header provides:
+
+<CardGroup cols={3}>
+  <Card title="Team Filter">
+    Filter transactions to show only a specific team's moves.
+  </Card>
+  
+  <Card title="Week Picker">
+    Navigate between different weeks or jump to a specific date.
+  </Card>
+  
+  <Card title="Toggle Details">
+    Expand or collapse all transaction sections at once.
+  </Card>
+</CardGroup>
+
+## Daily Sections
+
+Transactions are grouped by date in accordion sections:
+
+### Date Header
+
+Each day displays:
+
+- Day of week (short form)
+- Month and date
+- "Today" badge for current date
+- Auto-expanded state for today's transactions
+
+### Transaction Types
+
+Within each day, transactions are categorized by type:
+
+<Tabs>
+  <Tab title="Status Changes">
+    Roster status modifications:
+    - Placed on Injured List (IL)
+    - Activated from IL
+    - Designated for Assignment
+    - Outrighted to minors
+  </Tab>
+  
+  <Tab title="Movement">
+    Player location changes:
+    - Traded
+    - Claimed off waivers
+    - Selected in Rule 5 draft
+    - Purchased from another team
+  </Tab>
+  
+  <Tab title="Contract">
+    Contractual transactions:
+    - Signed as free agent
+    - Contract selected (called up)
+    - Released
+    - Granted free agency
+  </Tab>
+  
+  <Tab title="Options">
+    Minor league assignments:
+    - Optioned to Triple-A
+    - Optioned to Double-A
+    - Recalled from minors
+  </Tab>
+</Tabs>
+
+## Transaction Details
+
+Each transaction entry shows:
+
+### Player Information
+
+- Player name (linked to player profile)
+- Player headshot
+- Position
+- Jersey number (if applicable)
+
+### Transaction Info
+
+- Type of transaction (e.g., "Placed on 60-day IL")
+- Team involved (with logo and colors)
+- Date of transaction
+- Effective date (if different)
+- Additional notes or details
+
+<Info>
+Click any player name to view their full profile with career stats and information.
+</Info>
+
+## Filtering Transactions
+
+### By Team
+
+When filtering by team:
+
+- Only transactions involving the selected team appear
+- Both "from" and "to" transactions are included
+- Team filter persists across date navigation
+- Clear filter to view all teams again
+
+### By Type
+
+Within each day, toggle between transaction types:
+
+<Steps>
+  <Step title="Default View">
+    Shows the most common transaction type for that day.
+  </Step>
+  
+  <Step title="Type Selector">
+    Radio buttons let you filter to specific transaction types.
+  </Step>
+  
+  <Step title="All Transactions">
+    Toggle "All" to see every transaction regardless of type.
+  </Step>
+</Steps>
+
+## Transaction Types Explained
+
+<AccordionGroup>
+  <Accordion title="Injured List (IL)">
+    Players placed on IL are temporarily removed from the active roster due to injury:
+    
+    - **10-day IL**: Short-term injuries
+    - **15-day IL**: Medium-term injuries
+    - **60-day IL**: Serious long-term injuries
+    - Team can add a replacement player to the 40-man roster
+  </Accordion>
+  
+  <Accordion title="Designated for Assignment (DFA)">
+    Team removes player from 40-man roster:
+    
+    - Team has 7 days to trade, waive, or outright the player
+    - Opens a roster spot for another player
+    - Player may be claimed by another team
+  </Accordion>
+  
+  <Accordion title="Options">
+    Moving players between MLB and minors:
+    
+    - **Optioned**: Sent to minor league affiliate
+    - **Recalled**: Brought back to MLB roster
+    - Players have limited option years available
+  </Accordion>
+  
+  <Accordion title="Trades">
+    Players exchanged between teams:
+    
+    - Shows both teams involved
+    - Lists all players in the trade
+    - May include draft picks or cash
+    - Effective immediately or on specific date
+  </Accordion>
+  
+  <Accordion title="Waivers">
+    Claiming process for available players:
+    
+    - Team claims player off waivers from another team
+    - Waiver priority based on standings
+    - Player's existing contract transfers to new team
+  </Accordion>
+  
+  <Accordion title="Free Agency">
+    Unsigned players available to all teams:
+    
+    - Player signs with new team
+    - Contract terms (years/dollars) when available
+    - May include signing bonus information
+  </Accordion>
+</AccordionGroup>
+
+## Auto-Refresh
+
+During active transaction periods:
+
+- Current week refreshes automatically
+- New transactions appear with smooth animations
+- No page reload required
+- Maintains your scroll position and filters
+
+<Note>
+Major transaction activity typically occurs during:
+- Trade deadline (late July)
+- Free agency period (November-February)
+- Spring Training (February-March)
+- Waiver deadline (August)
+</Note>
+
+## Sorting and Organization
+
+Transactions are organized for readability:
+
+### By Date
+- Most recent dates appear first
+- Today's transactions auto-expanded
+- Older dates collapsed by default
+
+### By Team (within type)
+- Alphabetically sorted by team name
+- Consistent ordering across dates
+- Team colors for visual identification
+
+### By Type Count
+- Most active transaction type shown first
+- Count displayed for each type
+- Total count for all transactions
+
+## Mobile Experience
+
+On mobile devices:
+
+- Swipe between dates
+- Tap to expand/collapse sections
+- Compact transaction cards
+- Optimized player images
+- Touch-friendly controls
+
+## Empty States
+
+When no transactions exist:
+
+- "No transactions" message displays
+- Try different date ranges
+- Check team filters
+- Some weeks have minimal activity
+
+<Warning>
+Transaction information is provided as reported by MLB. Details may be updated after initial posting.
+</Warning>
+
+## Common Transaction Scenarios
+
+### Season Opening
+- Teams cut rosters from 40 to 26 players
+- Many options and designations
+- Final roster takes shape
+
+### Trade Deadline
+- High volume of trades
+- Contenders acquire rentals
+- Sellers trade expiring contracts
+
+### September Call-Ups
+- Rosters expand
+- Minor leaguers promoted
+- Teams evaluate prospects
+
+### Offseason
+- Free agent signings
+- Non-tender decisions
+- Minor trades and signings
+
+<Card title="Next: API Playground" icon="code" href="/features/api-playground">
+  Explore the MLB data API with an interactive playground.
+</Card>

@@ -1,0 +1,229 @@
+---
+title: 'Player Statistics'
+description: 'Comprehensive player profiles with career stats, hot zones, and season-by-season breakdowns'
+---
+
+## Overview
+
+Player profile pages provide in-depth statistics, career information, and visual analytics for MLB players past and present.
+
+## Player Profile Header
+
+Each player page features:
+
+- **Player Name**: First name and last name prominently displayed
+- **Headshot**: High-quality player photo (silo for active players, action shots for retired)
+- **Jersey Number**: Current uniform number
+- **Position**: Primary position abbreviation (P, C, 1B, 2B, SS, 3B, OF, DH)
+- **Team Association**: Current team or most recent team
+- **Action Controls**:
+  - Add to comparison tool
+  - Add to favorites
+
+## Personal Information
+
+The player info section displays biographical details:
+
+<CardGroup cols={2}>
+  <Card title="Jersey Number">
+    Current uniform number worn by the player.
+  </Card>
+  
+  <Card title="Position">
+    Primary defensive position (abbreviated).
+  </Card>
+  
+  <Card title="Birth Date">
+    Date of birth with current age calculated automatically.
+  </Card>
+  
+  <Card title="Birth Place">
+    City and country of birth.
+  </Card>
+</CardGroup>
+
+<Info>
+All player data syncs directly from MLB's official player database.
+</Info>
+
+## Roster History
+
+The roster entries section shows the player's team history:
+
+- All teams played for
+- Seasons with each team
+- Jersey numbers used
+- Status (Active, 40-Man, Injured List, etc.)
+
+## Career Statistics
+
+Player stats are organized into hitting and pitching categories with interactive toggles.
+
+### Hitting Statistics
+
+<Tabs>
+  <Tab title="Available Stats">
+    View career batting stats including:
+    
+    - **AVG** - Batting average
+    - **HR** - Home runs
+    - **RBI** - Runs batted in
+    - **H** - Hits
+    - **2B** - Doubles
+    - **3B** - Triples
+    - **BB** - Walks
+    - **SB** - Stolen bases
+    - **SLG** - Slugging percentage
+  </Tab>
+  
+  <Tab title="Year-by-Year">
+    Interactive year-by-year breakdown:
+    
+    - Select any stat to view across seasons
+    - Visual bar charts for each season
+    - Compare performance trends over time
+    - Filter by team or league
+  </Tab>
+</Tabs>
+
+### Pitching Statistics
+
+<Tabs>
+  <Tab title="Available Stats">
+    Complete pitching metrics:
+    
+    - **ERA** - Earned run average
+    - **WHIP** - Walks + hits per inning pitched
+    - **IP** - Innings pitched
+    - **K** - Strikeouts
+    - **BB** - Walks
+    - **HBP** - Hit batsmen
+    - **W** - Wins
+    - **L** - Losses
+    - **SV** - Saves
+  </Tab>
+  
+  <Tab title="Year-by-Year">
+    Season-by-season pitching analysis:
+    
+    - Toggle between different stat categories
+    - Visual graphs showing performance trends
+    - Identify career peaks and valleys
+    - Compare across different teams/leagues
+  </Tab>
+</Tabs>
+
+<Note>
+For two-way players like Shohei Ohtani, both hitting and pitching stats are available and can be toggled between.
+</Note>
+
+## Hot and Cold Zones
+
+### Strike Zone Heat Maps
+
+For batters, interactive strike zone visualizations show:
+
+- **Hot Zones**: Areas where the player hits well (highlighted in green/yellow)
+- **Cold Zones**: Areas where the player struggles (shown in blue/gray)
+- **Batting Average**: By zone location
+- **Pitch Type Breakdown**: Performance against different pitch types
+
+### Pitch Location Analysis
+
+For pitchers, zone charts display:
+
+- Where pitches are most effective
+- Opponent batting average by zone
+- Strike percentage by location
+- Pitch type distribution
+
+<Tip>
+Hot/cold zones update throughout the season based on recent at-bats and provide valuable insights into player tendencies.
+</Tip>
+
+## Year-by-Year Visualization
+
+The interactive year-by-year stat viewer lets you:
+
+### Select Stats
+
+<Steps>
+  <Step title="Choose Category">
+    Toggle between hitting and pitching stats using the radio buttons.
+  </Step>
+  
+  <Step title="Pick a Stat">
+    Click any stat abbreviation (AVG, HR, ERA, etc.) to view that metric across all seasons.
+  </Step>
+  
+  <Step title="View Visualization">
+    A bar chart displays the selected stat for each season of the player's career.
+  </Step>
+  
+  <Step title="Compare Performance">
+    Easily spot career highs, lows, and performance trends over time.
+  </Step>
+</Steps>
+
+### Stat Selection
+
+The stat selector features:
+
+- Drag-and-drop reordering (on supported devices)
+- Active stat highlighted with accent color
+- Abbreviations explained on hover
+- Automatic switching between hit/pitch stats
+
+## Player Search
+
+Find any MLB player:
+
+- Search by first name, last name, or both
+- Filter by current team
+- Filter by position
+- Active players appear first
+- Retired players included in search
+
+## Player Comparison
+
+Add players to your comparison list to:
+
+- Compare stats side-by-side
+- View multiple players simultaneously
+- Analyze relative performance
+- Share comparisons with others
+
+<Card title="Learn More" icon="code-compare" href="/features/player-stats#comparison">
+  Read about using the player comparison tool.
+</Card>
+
+## Structured Data
+
+Player pages include rich schema.org markup for:
+
+- Search engine optimization
+- Rich snippets in search results
+- Social media previews
+- Voice assistant compatibility
+
+This ensures player information appears correctly across:
+- Google Search
+- Social media shares (Twitter, Facebook, etc.)
+- Smart assistants (Siri, Google Assistant)
+
+<Warning>
+Some stats may not be available for players from earlier eras due to limited historical data collection.
+</Warning>
+
+## Favorite Players
+
+Mark players as favorites to:
+
+- Quick access from any page
+- Prioritize in search results
+- Track their games on the schedule
+- Get personalized updates
+
+<Card title="Next: Standings" icon="trophy" href="/features/standings">
+  View team rankings and divisional standings.
+</Card>

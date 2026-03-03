@@ -1,0 +1,258 @@
+---
+title: Navigation Guide
+description: Learn how to navigate MLB.TheOhtani.com and access different sections including schedules, stats, teams, and the API playground.
+---
+
+## Sidebar Navigation
+
+The primary navigation is located in the collapsible sidebar on the left side of the screen.
+
+### Main Sections
+
+The sidebar provides quick access to all major sections:
+
+- **Daily Schedule** - Today's games with live updates
+- **Weekly Schedule** - Seven-day calendar view of games
+- **Standings** - League and division standings
+- **Stat Leaders** - Top performers by category
+- **Teams** - Browse all MLB teams
+- **Players** - Search and explore player statistics
+- **Transactions** - Recent roster moves and trades
+- **Stats API Playground** - Interactive API explorer (development mode)
+
+### Active Page Indicator
+
+The current section is highlighted with:
+
+- A colored dot indicator to the left of the link
+- The active state remains visible while browsing subsections
+
+### Game Count Badge
+
+The Daily Schedule link shows the number of games scheduled for today, updating automatically.
+
+### Sidebar Controls
+
+On desktop devices:
+
+- Click the sidebar toggle to expand/collapse
+- Collapsed mode shows only icons for space efficiency
+- Expanded mode displays full labels and additional features
+
+On mobile devices:
+
+- Tap the menu icon to open the sidebar drawer
+- Tap outside or navigate to close automatically
+
+<Note>
+  The sidebar state persists across page navigation, maintaining your preferred viewing mode.
+</Note>
+
+## URL Structure
+
+MLB.TheOhtani.com uses clean, predictable URLs for easy navigation and bookmarking.
+
+### Common Patterns
+
+```
+/ - Home page with season overview
+/schedule/day - Daily schedule (defaults to today)
+/schedule/day/[date] - Specific date (format: YYYY-MM-DD)
+/schedule/week - Weekly schedule (defaults to current week)
+/schedule/week/[date] - Week containing the specified date
+/game/[gamePk] - Individual game details
+/teams - All teams directory
+/teams/[teamId] - Individual team page
+/player - Player search
+/player/[personId] - Individual player page
+/player/compare - Player comparison tool
+/standings - Current season standings
+/standings/[season] - Specific season standings
+/stats - Current season stat leaders
+/stats/[season] - Specific season stat leaders
+/transactions - Recent transactions
+/transactions/[date] - Transactions for specific date
+/api/v1 - API Playground home
+/api/v1/[...path] - Specific API endpoint explorer
+```
+
+### Date Formats
+
+All date-based URLs use the ISO 8601 format: `YYYY-MM-DD`
+
+Examples:
+- `/schedule/day/2026-03-03`
+- `/transactions/2026-03-01`
+
+<Info>
+  You can manually edit dates in the URL to quickly jump to specific days without using date pickers.
+</Info>
+
+## Breadcrumb Navigation
+
+Most pages display breadcrumbs below the header showing your current location in the site hierarchy.
+
+### Features
+
+- Click any breadcrumb to navigate up the hierarchy
+- Automatically generated based on page structure
+- Helps orient you within nested sections
+
+Example breadcrumb trail:
+```
+Players > Player Comparison
+```
+
+## In-Page Navigation
+
+### Weekly Schedule
+
+The weekly schedule includes:
+
+- **Week Picker** - Navigate to previous/next weeks or select specific dates
+- **Sport Selector** - Filter by league (MLB, Minor Leagues, etc.)
+- **Toggle All Details** - Expand/collapse all day sections at once
+- **Expandable Days** - Click day headers to show/hide games
+- **Game Count Links** - Click the game count to view daily detail page
+
+### Player Comparison
+
+- **Player Selection** - Add/remove players from comparison
+- **Stat Group Selector** - Switch between hitting, pitching, and fielding stats
+- **Individual Stats** - Choose which statistics to compare
+- **Horizontal Scroll** - Swipe to view more players on mobile
+
+### API Playground
+
+- **Endpoint Browser** - Explore available API paths
+- **Query Parameters** - Modify request parameters dynamically
+- **Response Viewer** - Navigate through JSON response structure
+- **Syntax Highlighting** - Color-coded JSON for readability
+
+## Search and Filters
+
+### Finding Content
+
+Different sections offer specialized search and filtering:
+
+#### Schedule Views
+
+- **Date Pickers** - Jump to any date or week
+- **Sport Filter** - Show games from specific leagues
+- **Favorite Teams** - Games featuring favorites appear first
+
+#### Player Search
+
+- Search by player name
+- Filter by team
+- View player headshots for visual identification
+
+#### Standings
+
+- **Season Selector** - View standings from previous seasons
+- **Division Tabs** - Switch between AL/NL divisions
+
+#### Stats Leaders
+
+- **Category Selection** - Choose batting, pitching, or fielding
+- **Stat Type** - Sort by different statistical measures
+- **Season Filter** - Compare leaders across seasons
+
+<Note>
+  Most filters update the URL, allowing you to share filtered views with others or bookmark them.
+</Note>
+
+## Favorites Quick Access
+
+The sidebar includes special sections for personalization:
+
+### Favorites List
+
+- Displays all teams and players you've marked as favorites
+- Click to navigate directly to team/player pages
+- Remove items by unfavoriting from their respective pages
+
+### Player Comparisons
+
+- Shows players added to your comparison queue
+- Quick access to the comparison tool
+- Add up to multiple players for side-by-side analysis
+
+### Spoiler Prevention
+
+- Hide scores for games you plan to watch later
+- Toggle on/off per game or globally
+- Prevent accidental spoilers while browsing
+
+## Keyboard Navigation
+
+MLB.TheOhtani.com supports standard keyboard navigation:
+
+- **Tab** - Move between interactive elements
+- **Enter** - Activate links and buttons
+- **Arrow Keys** - Navigate date pickers and selectors
+- **Escape** - Close modals and dropdown menus
+
+## Mobile Navigation
+
+### Touch Gestures
+
+- **Swipe** - Scroll horizontally through comparison tables
+- **Tap** - Expand/collapse schedule days
+- **Pull to Refresh** - Reload live game data (on supported pages)
+
+### Mobile Optimizations
+
+- Bottom navigation safe area support for notched devices
+- Larger touch targets for easier interaction
+- Simplified layouts for smaller screens
+- Optimized table views with horizontal scrolling
+
+## External Links
+
+The sidebar footer includes:
+
+- **View on GitHub** - Source code repository
+- **Built by nuotsu** - Developer website
+
+These links open in new tabs to preserve your place in the app.
+
+## Tips for Efficient Navigation
+
+<CardGroup cols={2}>
+  <Card icon="star" title="Use Favorites">
+    Mark your favorite teams and players for instant access from any page.
+  </Card>
+  <Card icon="link" title="Bookmark URLs">
+    Save direct links to frequently accessed views like your team's schedule.
+  </Card>
+  <Card icon="keyboard" title="Keyboard Shortcuts">
+    Use Tab and Enter to navigate quickly without reaching for your mouse.
+  </Card>
+  <Card icon="calendar" title="Edit Dates in URL">
+    Manually modify dates in the address bar to jump to specific dates instantly.
+  </Card>
+</CardGroup>
+
+<Info>
+  The app remembers your sidebar state, dark mode preference, and favorites across sessions for a personalized experience.
+</Info>
+
+## Related Documentation
+
+<CardGroup cols={2}>
+  <Card
+    title="Features Overview"
+    icon="compass"
+    href="/features"
+  >
+    Explore all features available in MLB.TheOhtani.com.
+  </Card>
+  <Card
+    title="Introduction"
+    icon="house"
+    href="/introduction"
+  >
+    Return to the getting started guide.
+  </Card>
+</CardGroup>

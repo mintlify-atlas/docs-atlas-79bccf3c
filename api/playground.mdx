@@ -1,0 +1,232 @@
+---
+title: API Playground
+description: Interactive tool for exploring MLB Stats API endpoints and testing queries
+---
+
+## Overview
+
+The API Playground is an interactive tool that allows you to:
+
+- Browse all available MLB Stats API endpoints
+- Configure path and query parameters
+- Send requests and view live responses
+- Copy working examples to use in your code
+- Discover entity IDs (teams, players, games, etc.)
+
+## Accessing the Playground
+
+The playground is available in the application UI. Navigate to the playground section to start exploring.
+
+## Endpoint Categories
+
+Endpoints are organized into the following categories:
+
+### Sport
+- **Sports** - List all sports with their IDs (MLB=1, AAA=11, etc.)
+- **Divisions** - Get division info (AL East, NL West, etc.) with standings
+- **Leagues** - Get league details (American/National League)
+
+### Schedule
+- **Schedule** - Get game schedules by date, team, or venue
+- **Postseason Schedule** - Postseason bracket and series information
+
+### Game
+- **Live Feed** - Complete live game data with all plays and matchups
+- **Boxscore** - Traditional box score with batting/pitching lines
+- **Linescore** - Inning-by-inning runs, hits, errors
+- **Content** - Game media including highlight videos
+- **Context Metrics** - Advanced stats like leverage index
+- **Win Probability** - Win probability after each play
+- **Play by Play** - Chronological list of all plays
+- **Game Changes** - Games updated since a given date
+- **Game Pace** - Pace of play statistics
+
+### Teams
+- **Teams** - List all teams with IDs and metadata
+- **Team Details** - Detailed information for a specific team
+- **Roster** - Current or historical roster
+- **Coaches** - Coaching staff information
+- **Team History** - Franchise history and former names
+- **Affiliates** - Minor league affiliates
+
+### People
+- **Person** - Player biographical information
+- **Person Stats** - Player statistics (season or career)
+- **Game Stats** - Player's stats from a specific game
+- **Free Agents** - List of free agents by offseason
+- **People Changes** - Players whose records changed since a date
+- **People Search** - Search players by name
+
+### Standings
+- **Standings** - Current standings with W-L records and splits
+
+### Stats
+- **Stats** - General stats query for aggregated data
+- **Leaders** - League leaders in specific categories
+
+### Other
+- **Seasons** - Season metadata and important dates
+- **Venues** - Ballpark information and dimensions
+- **Draft** - MLB Draft results by year
+- **Transactions** - Roster transactions (trades, signings, etc.)
+- **Jobs** - Game officials (umpires, scorers)
+- **Uniforms** - Uniform details for specific games
+- **Attendance** - Attendance figures by team and season
+
+### Meta
+- **Baseball Stats** - All available stat types and categories
+- **Game Status** - All possible game status codes
+- **Game Types** - Game type codes and descriptions
+
+## Using Parameters
+
+Parameters are divided into two types:
+
+### Path Parameters
+
+Path parameters are part of the endpoint URL:
+
+```
+/api/v1/teams/{teamId}
+```
+
+Example values:
+- `119` - Los Angeles Dodgers
+- `147` - New York Yankees
+
+### Query Parameters
+
+Query parameters are added to the URL:
+
+```
+/api/v1/schedule?sportId=1&date=2026-03-26
+```
+
+Common query parameters:
+
+<ParamField query="sportId" type="string">
+  Filter by sport (1=MLB, 11=AAA, 51=International)
+</ParamField>
+
+<ParamField query="season" type="string">
+  Year for seasonal data
+</ParamField>
+
+<ParamField query="date" type="string">
+  Specific date in ISO format (YYYY-MM-DD)
+</ParamField>
+
+<ParamField query="fields" type="string">
+  Comma-separated field paths to include in response
+</ParamField>
+
+<ParamField query="hydrate" type="string">
+  Additional data to include (e.g., "team", "person", "linescore")
+</ParamField>
+
+## Field Filtering
+
+The `fields` parameter allows you to limit the response to specific fields:
+
+```typescript
+// Without fields - returns complete response
+/api/v1/schedule?date=2026-03-26
+
+// With fields - returns only specified data
+/api/v1/schedule?date=2026-03-26&fields=dates,games,gamePk,teams,team,name
+```
+
+Field paths use dot notation separated by commas:
+- `dates,games,gamePk` - Include dates, games within dates, and gamePk within games
+- `teams,team,name` - Include teams, team object, and team name
+
+<Tip>
+Use the `fields` parameter to reduce response size and improve performance when you only need specific data.
+</Tip>
+
+## Hydrations
+
+The `hydrate` parameter adds related data to the response:
+
+```typescript
+// Basic team info
+/api/v1/teams/119
+
+// Team info with current roster included
+/api/v1/teams/119?hydrate=roster
+```
+
+Common hydrations:
+- `team` - Include team details
+- `person` - Include person/player details
+- `linescore` - Include linescore data
+- `flags` - Include game flags (no-hitter, perfect game)
+
+## Example Queries
+
+### Get Today's Schedule
+
+```
+Endpoint: /api/v1/schedule
+Parameters:
+  sportId: 1
+  date: 2026-03-26
+  fields: dates,games,gamePk,teams,team,name
+```
+
+### Get Live Game Feed
+
+```
+Endpoint: /api/v1.1/game/{gamePk}/feed/live
+Path Parameters:
+  gamePk: 813024
+Query Parameters:
+  fields: liveData,plays,currentPlay,result,description
+```
+
+### Get Player Stats
+
+```
+Endpoint: /api/v1/people/{personId}/stats
+Path Parameters:
+  personId: 660271 (Shohei Ohtani)
+Query Parameters:
+  stats: season
+  group: hitting
+  season: 2025
+```
+
+### Get Team Roster
+
+```
+Endpoint: /api/v1/teams/{teamId}/roster
+Path Parameters:
+  teamId: 119 (Dodgers)
+Query Parameters:
+  season: 2025
+  hydrate: person
+```
+
+## Custom Endpoints
+
+The playground includes a custom endpoint option for exploring unlisted API paths:
+
+```
+Endpoint: /{custom}
+Path Parameters:
+  custom: /api/v1/your/custom/path
+```
+
+This allows you to test any MLB Stats API endpoint, even if it's not in the preset list.
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="View All Endpoints" icon="list" href="/api/endpoints">
+    Browse complete endpoint documentation
+  </Card>
+  
+  <Card title="Fetch Library" icon="code" href="/api/fetch-library">
+    Use endpoints in your TypeScript code
+  </Card>
+</CardGroup>

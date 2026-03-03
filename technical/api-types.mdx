@@ -1,0 +1,897 @@
+---
+title: MLB API Type Definitions
+description: Comprehensive TypeScript type definitions for the MLB Stats API endpoints and data structures
+---
+
+The `src/mlb.d.ts` file contains 1,953 lines of TypeScript definitions covering the entire MLB Stats API.
+
+## Overview
+
+All types are declared in a global `MLB` namespace, making them available throughout the application without imports:
+
+```typescript
+declare global {
+  namespace MLB {
+    // All MLB types here
+  }
+}
+
+export {}
+```
+
+## Team Types
+
+### Basic Team Information
+
+```typescript
+interface Team {
+  id: number
+  name: string
+  link: string
+  teamCode?: string
+  fileCode?: string
+  abbreviation?: string
+  teamName?: string
+  locationName?: string
+  firstYearOfPlay?: string
+  shortName?: string
+  franchiseName?: string
+  clubName?: string
+  active?: boolean
+  parentOrgId?: number
+}
+```
+
+**Usage:**
+```typescript
+const dodgers: MLB.Team = {
+  id: 119,
+  name: 'Los Angeles Dodgers',
+  abbreviation: 'LAD',
+  // ...
+}
+```
+
+### Detailed Team Information
+
+```typescript
+interface TeamDetailed extends Team {
+  season?: number
+  venue?: Venue
+  springVenue?: Venue
+  league?: League
+  division?: Division
+  sport?: Sport
+  springLeague?: SpringLeague
+  deviceProperties?: DeviceProperties
+}
+```
+
+**Includes:**
+- Venue information
+- League and division
+- Spring training details
+- Team branding (colors, logos)
+
+### Team Records
+
+```typescript
+interface LeagueRecord {
+  wins: number
+  losses: number
+  pct?: string
+  ties?: number
+}
+
+interface GameTeam {
+  leagueRecord: LeagueRecord
+  score?: number
+  team: Team
+  isWinner?: boolean
+  splitSquad?: boolean
+  seriesNumber?: number
+}
+```
+
+### Team Roster
+
+```typescript
+interface RosterResponse extends ApiResponse<Roster[]> {
+  roster: Roster[]
+}
+
+interface Roster {
+  person: {
+    id: number
+    fullName: string
+    link: string
+  }
+  jerseyNumber: string
+  position: Position
+  status: PlayerStatus
+  parentTeamId: number
+  isActive?: boolean
+  startDate?: string
+  endDate?: string
+  team: Team
+}
+```
+
+## Player/Person Types
+
+### Person Information
+
+```typescript
+interface Person {
+  id: number
+  fullName: string
+  link: string
+  firstName?: string
+  lastName?: string
+  primaryNumber?: string
+  birthDate?: string
+  currentAge?: number
+  birthCity?: string
+  birthStateProvince?: string
+  birthCountry?: string
+  height?: string
+  weight?: number
+  active?: boolean
+  primaryPosition?: Position
+  useName?: string
+  useLastName?: string
+  middleName?: string
+  boxscoreName?: string
+  nickName?: string
+  gender?: string
+  isPlayer?: boolean
+  isVerified?: boolean
+  draftYear?: number
+  mlbDebutDate?: string
+  batSide?: BatSide
+  pitchHand?: PitchHand
+  strikeZoneTop?: number
+  strikeZoneBottom?: number
+  currentTeam?: Team
+}
+```
+
+**Example:**
+```typescript
+const ohtani: MLB.Person = {
+  id: 660271,
+  fullName: 'Shohei Ohtani',
+  primaryNumber: '17',
+  batSide: { code: 'L', description: 'Left' },
+  pitchHand: { code: 'R', description: 'Right' },
+  // ...
+}
+```
+
+### Player Position
+
+```typescript
+interface Position {
+  code: string // 'P', '1B', 'OF', etc.
+  name: string
+  type: string
+  abbreviation: string
+}
+
+interface PositionMeta {
+  shortName: string
+  fullName: string
+  abbrev: string
+  code: string
+  type: string
+  formalName: string
+  displayName: string
+  pitcher: boolean
+  gamePosition: boolean
+  fielder: boolean
+  outfield: boolean
+}
+```
+
+### Batting/Pitching Handedness
+
+```typescript
+interface BatSide {
+  code: string // 'L', 'R', 'S' (switch)
+  description: string
+}
+
+interface PitchHand {
+  code: string // 'L', 'R'
+  description: string
+}
+```
+
+### Player Statistics
+
+```typescript
+interface PlayerStatsResponse extends ApiResponse<PlayerStats[]> {
+  stats: PlayerStats[]
+}
+
+interface PlayerStats {
+  type: StatType
+  group?: 'pitching' | 'hitting' | 'fielding'
+  exemptions?: unknown[]
+  splits: StatSplit[]
+}
+
+interface StatSplit {
+  group?: 'pitching' | 'hitting' | 'fielding'
+  season?: string
+  stat: Record<string, number | string>
+  team?: Team
+  player?: Person
+  position?: Position
+  league?: League
+  sport?: Sport
+  gameType?: string
+  numTeams?: number
+  rank?: number
+  name?: string
+  zones?: HotColdZone[]
+}
+```
+
+## Game Types
+
+### Basic Game Structure
+
+```typescript
+interface Game {
+  gamePk: number // Unique game identifier
+  link: string
+  gameType: string // 'R', 'S', 'E', 'A', etc.
+  season: string
+  gameDate: string
+  officialDate: string
+  status: GameStatus
+  teams: {
+    away: GameTeam
+    home: GameTeam
+  }
+  venue: Venue
+  content?: { link: string }
+  gameNumber?: number
+  publicFacing?: boolean
+  doubleHeader?: string
+  gamedayType?: string
+  dayNight?: string
+  description?: string
+  scheduledInnings?: number
+  gamesInSeries?: number
+  seriesGameNumber?: number
+  seriesDescription?: string
+}
+```
+
+### Game Status
+
+```typescript
+interface GameStatus {
+  abstractGameState: 'Preview' | 'Live' | 'Final'
+  codedGameState: string
+  detailedState: string // 'Scheduled', 'In Progress', 'Final', etc.
+  statusCode: string
+  startTimeTBD?: boolean
+  abstractGameCode: string
+  reason?: string
+}
+```
+
+### Live Game Feed
+
+```typescript
+interface LiveGameFeed {
+  copyright: string
+  gamePk: number
+  link: string
+  metaData: GameMetaData
+  gameData: GameData
+  liveData: LiveData
+}
+
+interface GameData {
+  game: Game
+  datetime: GameDateTime
+  status: GameStatus
+  teams: {
+    away: TeamDetailed
+    home: TeamDetailed
+  }
+  players: Record<string, PlayerGameData>
+  venue: Venue
+  weather?: Weather
+  gameInfo?: GameInfo
+  review?: Review
+  flags?: GameFlags
+  probablePitchers?: {
+    away?: Person
+    home?: Person
+  }
+}
+
+interface LiveData {
+  plays: Plays
+  linescore: Linescore
+  boxscore: Boxscore
+  decisions?: Decisions
+  leaders?: Leaders
+}
+```
+
+### Linescore
+
+```typescript
+interface Linescore {
+  currentInning?: number
+  currentInningOrdinal?: string // '1st', '2nd', etc.
+  inningState?: string
+  inningHalf?: string // 'Top', 'Bottom'
+  isTopInning?: boolean
+  scheduledInnings?: number
+  innings?: InningScore[]
+  teams?: {
+    home: LinescoreTeam
+    away: LinescoreTeam
+  }
+  defense?: Defense
+  offense?: Offense
+  balls?: number
+  strikes?: number
+  outs?: number
+}
+
+interface InningScore {
+  num: number
+  ordinalNum: string
+  home?: InningHalfScore
+  away?: InningHalfScore
+}
+
+interface InningHalfScore {
+  runs?: number
+  hits?: number
+  errors?: number
+  leftOnBase?: number
+}
+
+interface LinescoreTeam {
+  runs?: number
+  hits?: number
+  errors?: number
+  leftOnBase?: number
+}
+```
+
+### Boxscore
+
+```typescript
+interface Boxscore {
+  teams: {
+    away: TeamBoxscore
+    home: TeamBoxscore
+  }
+  officials?: Official[]
+  info?: BoxscoreInfo[]
+  pitchingNotes?: string[]
+  topPerformers?: TopPerformers[]
+}
+
+interface TeamBoxscore {
+  team: Team
+  teamStats: TeamStats
+  players: Record<string, BoxscorePlayer>
+  batters: number[] // Player IDs
+  pitchers: number[]
+  bench: number[]
+  bullpen: number[]
+  battingOrder: number[]
+  info?: BoxscoreInfo[]
+  note?: BoxscoreNote[]
+}
+
+interface BoxscorePlayer {
+  person: Person
+  jerseyNumber?: string
+  position: Position
+  status: PlayerStatus
+  parentTeamId: number
+  stats?: {
+    batting?: BattingStats
+    pitching?: PitchingStats
+    fielding?: FieldingStats
+  }
+  seasonStats?: {
+    batting?: BattingStats
+    pitching?: PitchingStats
+    fielding?: FieldingStats
+  }
+  gameStatus?: PlayerGameStatus
+  allPositions?: Position[]
+}
+```
+
+### Statistics Types
+
+#### Batting Statistics
+
+```typescript
+interface BattingStats {
+  summary?: string
+  runs?: number
+  doubles?: number
+  triples?: number
+  homeRuns?: number
+  strikeOuts?: number
+  baseOnBalls?: number
+  intentionalWalks?: number
+  hits?: number
+  hitByPitch?: number
+  avg?: string
+  atBats?: number
+  obp?: string
+  slg?: string
+  ops?: string
+  caughtStealing?: number
+  stolenBases?: number
+  stolenBasePercentage?: string
+  groundIntoDoublePlay?: number
+  numberOfPitches?: number
+  plateAppearances?: number
+  totalBases?: number
+  rbi?: number
+  leftOnBase?: number
+  sacBunts?: number
+  sacFlies?: number
+  babip?: string
+  groundOutsToAirouts?: string
+  catchersInterference?: number
+  atBatsPerHomeRun?: string
+}
+```
+
+#### Pitching Statistics
+
+```typescript
+interface PitchingStats {
+  note?: string
+  summary?: string
+  runs?: number
+  doubles?: number
+  triples?: number
+  homeRuns?: number
+  strikeOuts?: number
+  baseOnBalls?: number
+  intentionalWalks?: number
+  hits?: number
+  hitByPitch?: number
+  atBats?: number
+  era?: string
+  inningsPitched?: string
+  wins?: number
+  losses?: number
+  saves?: number
+  saveOpportunities?: number
+  holds?: number
+  blownSaves?: number
+  earnedRuns?: number
+  whip?: string
+  battersFaced?: number
+  outs?: number
+  gamesPitched?: number
+  completeGames?: number
+  shutouts?: number
+  strikes?: number
+  strikePercentage?: string
+  hitBatsmen?: number
+  balks?: number
+  wildPitches?: number
+  pickoffs?: number
+  groundOuts?: number
+  airOuts?: number
+  groundOutsToAirouts?: string
+  winPercentage?: string
+  pitchesPerInning?: string
+  gamesFinished?: number
+  strikeoutWalkRatio?: string
+  strikeoutsPer9Inn?: string
+  walksPer9Inn?: string
+  hitsPer9Inn?: string
+  runsScoredPer9?: string
+  homeRunsPer9?: string
+  inheritedRunners?: number
+  inheritedRunnersScored?: number
+}
+```
+
+#### Fielding Statistics
+
+```typescript
+interface FieldingStats {
+  summary?: string
+  caughtStealing?: number
+  stolenBases?: number
+  stolenBasePercentage?: string
+  assists?: number
+  putOuts?: number
+  errors?: number
+  chances?: number
+  fielding?: string
+  passedBall?: number
+}
+```
+
+### Play-by-Play
+
+```typescript
+interface Plays {
+  allPlays: Play[]
+  currentPlay?: Play
+  scoringPlays: number[]
+  playsByInning: PlaysByInning[]
+}
+
+interface Play {
+  result: PlayResult
+  about: PlayAbout
+  count: Count
+  matchup: Matchup
+  pitchIndex?: number[]
+  actionIndex?: number[]
+  runnerIndex?: number[]
+  runners?: Runner[]
+  playEvents?: PlayEvent[]
+  playEndTime?: string
+  atBatIndex?: number
+}
+
+interface PlayResult {
+  type: string
+  event: string
+  eventType: string
+  description: string
+  rbi?: number
+  awayScore?: number
+  homeScore?: number
+}
+
+interface PlayAbout {
+  atBatIndex: number
+  halfInning: 'top' | 'bottom'
+  isTopInning: boolean
+  inning: number
+  startTime?: string
+  endTime?: string
+  isComplete?: boolean
+  isScoringPlay?: boolean
+  hasReview?: boolean
+  hasOut?: boolean
+  captivatingIndex?: number
+}
+
+interface Count {
+  balls: number
+  strikes: number
+  outs: number
+}
+
+interface Matchup {
+  batter: Person
+  batSide: BatSide
+  pitcher: Person
+  pitchHand: PitchHand
+  batterHotColdZones?: unknown[]
+  pitcherHotColdZones?: unknown[]
+  splits?: MatchupSplits
+  postOnFirst?: Person
+  postOnSecond?: Person
+  postOnThird?: Person
+}
+```
+
+### Pitch Data (Statcast)
+
+```typescript
+interface PlayEvent {
+  details?: PitchDetails
+  count?: Count
+  pitchData?: PitchData
+  index?: number
+  startTime?: string
+  endTime?: string
+  isPitch?: boolean
+  type?: string
+}
+
+interface PitchData {
+  startSpeed?: number // mph
+  endSpeed?: number
+  strikeZoneTop?: number
+  strikeZoneBottom?: number
+  coordinates?: PitchCoordinates
+  breaks?: PitchBreaks
+  zone?: number
+  typeConfidence?: number
+  plateTime?: number
+  extension?: number
+}
+
+interface PitchCoordinates {
+  aY?: number
+  aZ?: number
+  pfxX?: number
+  pfxZ?: number
+  pX?: number
+  pZ?: number
+  vX0?: number
+  vY0?: number
+  vZ0?: number
+  x?: number
+  y?: number
+  x0?: number
+  y0?: number
+  z0?: number
+  aX?: number
+}
+
+interface PitchBreaks {
+  breakAngle?: number
+  breakLength?: number
+  breakY?: number
+  breakVertical?: number
+  breakVerticalInduced?: number
+  breakHorizontal?: number
+  spinRate?: number // rpm
+  spinDirection?: number // degrees
+}
+```
+
+## Schedule Types
+
+```typescript
+interface ScheduleResponse extends ApiResponse<ScheduleDate[]> {
+  totalItems: number
+  totalEvents: number
+  totalGames: number
+  totalGamesInProgress: number
+  dates: ScheduleDate[]
+}
+
+interface ScheduleDate {
+  date: string // ISO date
+  totalItems: number
+  totalEvents: number
+  totalGames: number
+  totalGamesInProgress: number
+  games: Game[]
+  events: ScheduleEvent[]
+}
+```
+
+## Standings Types
+
+```typescript
+interface StandingsResponse extends ApiResponse<StandingsRecord[]> {
+  records: StandingsRecord[]
+}
+
+interface StandingsRecord {
+  standingsType: string
+  league: League
+  division: Division
+  sport: Sport
+  lastUpdated: string
+  teamRecords: TeamRecord[]
+}
+
+interface TeamRecord {
+  team: Team
+  season: string
+  streak: Streak
+  divisionRank: string
+  leagueRank: string
+  wildCardRank?: string
+  sportRank: string
+  gamesPlayed: number
+  gamesBack: string
+  wildCardGamesBack?: string
+  leagueRecord: LeagueRecord
+  records: Records
+  divisionLeader?: boolean
+  wins: number
+  losses: number
+  runDifferential: number
+  winningPercentage: string
+}
+
+interface Streak {
+  streakType: string // 'wins', 'losses'
+  streakNumber: number
+  streakCode: string // 'W5', 'L2', etc.
+}
+```
+
+## Venue Types
+
+```typescript
+interface Venue {
+  id: number
+  name: string
+  link: string
+  location?: VenueLocation
+  timeZone?: TimeZone
+  fieldInfo?: FieldInfo
+  active?: boolean
+  season?: string
+}
+
+interface VenueLocation {
+  address1?: string
+  city?: string
+  state?: string
+  stateAbbrev?: string
+  postalCode?: string
+  defaultCoordinates?: Coordinates
+  country?: string
+  phone?: string
+}
+
+interface FieldInfo {
+  capacity?: number
+  turfType?: string // 'Grass', 'Artificial Turf'
+  roofType?: string // 'Open', 'Retractable', 'Dome'
+  leftLine?: number // Distance in feet
+  leftCenter?: number
+  center?: number
+  rightCenter?: number
+  rightLine?: number
+}
+```
+
+## League/Division Types
+
+```typescript
+interface League {
+  id: number
+  name: string // 'American League', 'National League'
+  link: string
+  abbreviation?: string // 'AL', 'NL'
+  nameShort?: string
+  seasonState?: string
+  hasWildCard?: boolean
+  hasSplitSeason?: boolean
+  numGames?: number
+  hasPlayoffPoints?: boolean
+  numTeams?: number
+  numWildcardTeams?: number
+  seasonDateInfo?: SeasonDateInfo
+  season?: string
+  sport?: Sport
+}
+
+interface Division {
+  id: number
+  name: string // 'American League East', etc.
+  link: string
+  season?: string
+  nameShort?: string
+  abbreviation?: string // 'ALE', 'NLW', etc.
+  league?: League
+  sport?: Sport
+  hasWildcard?: boolean
+  sortOrder?: number
+  numPlayoffTeams?: number
+  active?: boolean
+}
+
+interface Sport {
+  id: number // 1 for MLB
+  link: string
+  name: string
+  code?: string
+  abbreviation?: string
+  sortOrder?: number
+  activeStatus?: boolean
+}
+```
+
+## Utility Types
+
+### API Response Wrapper
+
+```typescript
+interface ApiResponse<T> {
+  copyright: string
+  [key: string]: T | string | number | boolean | null | undefined
+}
+```
+
+### API Link
+
+```typescript
+interface ApiLink {
+  href: string
+}
+```
+
+## Usage Examples
+
+### Fetching Game Data
+
+```typescript
+import { fetchMLB } from '$lib/fetch'
+
+// Fetch live game feed
+const game = await fetchMLB<MLB.LiveGameFeed>(
+  `/api/v1.1/game/718135/feed/live`
+)
+
+// Access typed data
+const homeTeam: MLB.Team = game.gameData.teams.home
+const awayScore: number = game.liveData.linescore.teams.away.runs
+const currentInning: number = game.liveData.linescore.currentInning
+```
+
+### Working with Schedule
+
+```typescript
+const schedule = await fetchMLB<MLB.ScheduleResponse>(
+  '/api/v1/schedule',
+  { sportId: 1, date: '2024-04-01' }
+)
+
+schedule.dates.forEach((dateEntry: MLB.ScheduleDate) => {
+  dateEntry.games.forEach((game: MLB.Game) => {
+    const status: MLB.GameStatus = game.status
+    const homeTeam: string = game.teams.home.team.name
+    const awayTeam: string = game.teams.away.team.name
+    
+    if (status.abstractGameState === 'Live') {
+      console.log(`${awayTeam} @ ${homeTeam} - In Progress`)
+    }
+  })
+})
+```
+
+### Player Stats
+
+```typescript
+const stats = await fetchMLB<MLB.PlayerStatsResponse>(
+  '/api/v1/people/660271/stats',
+  { stats: 'season', season: '2024' }
+)
+
+stats.stats.forEach((statGroup: MLB.PlayerStats) => {
+  if (statGroup.group === 'hitting') {
+    statGroup.splits.forEach((split: MLB.StatSplit) => {
+      const battingAvg = split.stat.avg as string
+      const homeRuns = split.stat.homeRuns as number
+      console.log(`AVG: ${battingAvg}, HR: ${homeRuns}`)
+    })
+  }
+})
+```
+
+## Type Coverage
+
+The `mlb.d.ts` file covers:
+
+- **Teams** - 10+ interfaces
+- **Players/People** - 15+ interfaces
+- **Games** - 50+ interfaces (including play-by-play, Statcast data)
+- **Statistics** - 20+ interfaces
+- **Schedules** - 5+ interfaces
+- **Standings** - 10+ interfaces
+- **Venues** - 5+ interfaces
+- **Transactions** - 5+ interfaces
+- **Draft** - 8+ interfaces
+- **Awards** - 3+ interfaces
+- **Content/Media** - 10+ interfaces
+
+**Total:** 100+ TypeScript interfaces covering the entire MLB Stats API surface.

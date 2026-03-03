@@ -1,0 +1,275 @@
+---
+title: Fetch Library
+description: Core fetchMLB function for making type-safe requests to the MLB Stats API
+---
+
+## Overview
+
+The fetch library provides TypeScript functions for making requests to the MLB Stats API. The core `fetchMLB` function handles URL construction, parameter serialization, and response parsing.
+
+## Installation
+
+The fetch library is located at:
+
+```
+~/workspace/source/src/lib/fetch/index.ts
+```
+
+## fetchMLB Function
+
+The `fetchMLB` function is the foundation for all API requests.
+
+### Function Signature
+
+```typescript
+export async function fetchMLB<T>(
+  endpoint: string, 
+  params?: Fetch.Params
+): Promise<T>
+```
+
+### Type Definitions
+
+```typescript
+namespace Fetch {
+  type QueryParamKeys =
+    | keyof typeof PRESETS
+    | 'startDate'
+    | 'endDate'
+    | 'fields'
+    | 'hydrate'
+    | 'names'
+    | (string & {})
+
+  type Params = Partial<Record<QueryParamKeys, string | string[]>>
+}
+```
+
+### Parameters
+
+<ParamField path="endpoint" type="string" required>
+  API endpoint path (e.g., `/api/v1/schedule`)
+</ParamField>
+
+<ParamField path="params" type="Fetch.Params">
+  Query parameters as key-value pairs. Values can be strings or string arrays.
+</ParamField>
+
+### Return Value
+
+<ResponseField name="Promise<T>" type="T">
+  Generic promise that resolves to the specified type `T`. The response is automatically parsed as JSON.
+</ResponseField>
+
+## How It Works
+
+The `fetchMLB` function:
+
+1. Constructs the full URL by combining the endpoint with the base host
+2. Converts the params object into URL search parameters
+3. Handles array values by joining them with commas
+4. Makes the fetch request
+5. Parses and returns the JSON response
+
+### Source Code
+
+From `~/workspace/source/src/lib/fetch/index.ts:4-14`:
+
+```typescript
+export async function fetchMLB<T>(endpoint: string, params?: Fetch.Params) {
+  const url = new URL(endpoint, HOST)
+
+  for (const [key, value] of Object.entries(params ?? {})) {
+    url.searchParams.set(key, typeof value !== 'string' ? value!?.flat().join(',') : value)
+  }
+
+  const response = await fetch(url.toString())
+
+  return (await response.json()) as T
+}
+```
+
+## Usage Examples
+
+### Basic Request
+
+Fetch today's schedule:
+
+```typescript
+import { fetchMLB } from '$lib/fetch'
+
+const schedule = await fetchMLB<MLB.ScheduleResponse>('/api/v1/schedule', {
+  sportId: '1',
+  date: '2026-03-26'
+})
+
+console.log(schedule.dates)
+```
+
+### With Type Safety
+
+TypeScript will enforce the response type:
+
+```typescript
+import { fetchMLB } from '$lib/fetch'
+
+interface SeasonResponse {
+  seasons: Array<{
+    seasonId: string
+    regularSeasonStartDate: string
+    regularSeasonEndDate: string
+  }>
+}
+
+const data = await fetchMLB<SeasonResponse>('/api/v1/seasons', {
+  sportId: '1',
+  season: '2025'
+})
+
+// TypeScript knows data.seasons exists
+const season = data.seasons[0]
+```
+
+### Array Parameters
+
+Pass array values for multiple selections:
+
+```typescript
+import { fetchMLB } from '$lib/fetch'
+
+const schedule = await fetchMLB<MLB.ScheduleResponse>('/api/v1/schedule', {
+  sportId: '1',
+  date: '2026-03-26',
+  fields: [
+    'dates,games,gamePk',
+    'teams,team,name',
+    'status,detailedState'
+  ]
+})
+
+// URL will have: fields=dates,games,gamePk,teams,team,name,status,detailedState
+```
+
+### Field Filtering
+
+Reduce response size by specifying only needed fields:
+
+```typescript
+import { fetchMLB } from '$lib/fetch'
+
+const boxscore = await fetchMLB<MLB.Boxscore>('/api/v1/game/813024/boxscore', {
+  fields: [
+    'teams,away,team,name',
+    'stats,batting,atBats,hits,runs'
+  ]
+})
+```
+
+### Path Parameters
+
+For endpoints with path parameters, include them in the endpoint string:
+
+```typescript
+import { fetchMLB } from '$lib/fetch'
+
+const gamePk = '813024'
+
+const linescore = await fetchMLB<MLB.Linescore>(
+  `/api/v1/game/${gamePk}/linescore`
+)
+
+const roster = await fetchMLB<MLB.RosterResponse>(
+  `/api/v1/teams/119/roster`,
+  { season: '2025' }
+)
+```
+
+### Date Range Query
+
+```typescript
+import { fetchMLB } from '$lib/fetch'
+
+const schedule = await fetchMLB<MLB.ScheduleResponse>('/api/v1/schedule', {
+  sportId: '1',
+  startDate: '2026-03-26',
+  endDate: '2026-04-02',
+  teamId: '119'
+})
+```
+
+### Hydrations
+
+Include related data in the response:
+
+```typescript
+import { fetchMLB } from '$lib/fetch'
+
+const roster = await fetchMLB<MLB.RosterResponse>(
+  '/api/v1/teams/119/roster',
+  {
+    season: '2025',
+    hydrate: 'person'
+  }
+)
+
+// Response now includes full person details for each player
+```
+
+## Error Handling
+
+Add error handling for network failures or invalid responses:
+
+```typescript
+import { fetchMLB } from '$lib/fetch'
+
+try {
+  const data = await fetchMLB<MLB.ScheduleResponse>('/api/v1/schedule', {
+    sportId: '1',
+    date: '2026-03-26'
+  })
+  
+  console.log('Games:', data.dates?.[0]?.games)
+} catch (error) {
+  console.error('Failed to fetch schedule:', error)
+}
+```
+
+## Advanced: createPreset Factory
+
+The library includes a `createPreset` function for building reusable fetch functions. This is covered in detail in the [Presets documentation](/api/presets).
+
+### Function Signature
+
+```typescript
+export function createPreset<TArgs extends unknown[], T>(
+  build: (...args: TArgs) => { endpoint: string; params?: Fetch.Params }
+): ((...args: TArgs) => Promise<T>) & {
+  live: (...args: TArgs) => ReturnType<typeof fetchLiveMLB<T>>
+}
+```
+
+See the [Presets page](/api/presets) for usage examples.
+
+## Configuration
+
+The base URL is defined in `~/workspace/source/src/ui/playground/constants.ts:3`:
+
+```typescript
+export const HOST = 'https://statsapi.mlb.com'
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Preset Functions" icon="bolt" href="/api/presets">
+    Use pre-configured functions for common queries
+  </Card>
+  
+  <Card title="Live Data" icon="refresh" href="/api/live-data">
+    Auto-refresh data with real-time updates
+  </Card>
+  
+  <Card title="Browse Endpoints" icon="list" href="/api/endpoints">
+    View all available API endpoints
+  </Card>
+</CardGroup>

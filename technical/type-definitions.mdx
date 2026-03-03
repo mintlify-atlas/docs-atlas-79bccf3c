@@ -1,0 +1,517 @@
+---
+title: TypeScript Type System
+description: Overview of the TypeScript architecture, type definitions, and type-safe patterns used throughout the application
+---
+
+MLB.TheOhtani.com is fully typed with TypeScript 5.9.3, providing compile-time safety and excellent developer experience.
+
+## Type Definition Files
+
+### Global Type Declarations
+
+The application has two primary type definition files:
+
+#### `src/mlb.d.ts` (1,953 lines)
+
+Comprehensive MLB Stats API type definitions in a global `MLB` namespace. See [API Types](/technical/api-types) for detailed documentation.
+
+```typescript
+declare global {
+  namespace MLB {
+    interface Team { ... }
+    interface Game { ... }
+    interface Person { ... }
+    // ... 100+ interfaces
+  }
+}
+
+export {}
+```
+
+#### `src/app.d.ts`
+
+SvelteKit-specific type declarations:
+
+```typescript
+declare global {
+  namespace App {
+    // interface Error {}
+    // interface Locals {}
+    // interface PageData {}
+    // interface PageState {}
+    // interface Platform {}
+  }
+}
+
+export {}
+```
+
+## TypeScript Configuration
+
+### `tsconfig.json`
+
+The TypeScript configuration extends SvelteKit's defaults:
+
+```json
+{
+  "extends": "./.svelte-kit/tsconfig.json",
+  "compilerOptions": {
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "moduleResolution": "bundler",
+    "paths": {
+      "$lib": ["./src/lib"],
+      "$lib/*": ["./src/lib/*"],
+      "$ui": ["./src/ui"],
+      "$ui/*": ["./src/ui/*"],
+      "$pkg": ["./package.json"]
+    }
+  }
+}
+```
+
+**Key Settings:**
+- `strict: true` - Maximum type checking
+- `moduleResolution: "bundler"` - Modern module resolution
+- Path aliases for cleaner imports
+
+## Path Aliases
+
+Type-safe import aliases configured in both `tsconfig.json` and `svelte.config.js`:
+
+```typescript
+// Instead of:
+import { fetchMLB } from '../../../lib/fetch'
+
+// Use:
+import { fetchMLB } from '$lib/fetch'
+```
+
+**Available Aliases:**
+- `$lib` → `src/lib/`
+- `$ui` → `src/ui/`
+- `$pkg` → `package.json`
+- `$app/*` → SvelteKit modules (built-in)
+
+## Type Patterns
+
+### Component Props
+
+Svelte 5 components use TypeScript interfaces for props:
+
+```typescript
+<script lang="ts">
+  interface Props {
+    gamePk: number
+    showDetails?: boolean
+    onUpdate?: (game: MLB.Game) => void
+  }
+  
+  let { gamePk, showDetails = false, onUpdate }: Props = $props()
+</script>
+```
+
+**Best Practices:**
+- Define interface inline or import from types file
+- Use optional properties with default values
+- Type callback functions precisely
+
+### Generic Functions
+
+The fetch utility uses generics for type-safe API calls:
+
+```typescript
+export async function fetchMLB<T>(
+  endpoint: string,
+  params?: Fetch.Params
+): Promise<T> {
+  const url = new URL(endpoint, HOST)
+  
+  for (const [key, value] of Object.entries(params ?? {})) {
+    url.searchParams.set(key, typeof value !== 'string' ? value!?.flat().join(',') : value)
+  }
+  
+  const response = await fetch(url.toString())
+  return (await response.json()) as T
+}
+```
+
+**Usage:**
+```typescript
+// Return type is inferred as MLB.LiveGameFeed
+const game = await fetchMLB<MLB.LiveGameFeed>(
+  `/api/v1.1/game/${gamePk}/feed/live`
+)
+```
+
+### Higher-Order Functions
+
+The `createPreset` function creates type-safe API presets:
+
+```typescript
+export function createPreset<TArgs extends unknown[], T>(
+  build: (...args: TArgs) => { endpoint: string; params?: Fetch.Params },
+) {
+  const fn = async (...args: TArgs): Promise<T> => {
+    const { endpoint, params } = build(...args)
+    return fetchMLB<T>(endpoint, params)
+  }
+  
+  fn.live = (...args: TArgs) => {
+    const { endpoint, params } = build(...args)
+    return fetchLiveMLB<T>(endpoint, params)
+  }
+  
+  return fn as ((...args: TArgs) => Promise<T>) & {
+    live: (...args: TArgs) => ReturnType<typeof fetchLiveMLB<T>>
+  }
+}
+```
+
+**Usage:**
+```typescript
+const getGame = createPreset<[number], MLB.LiveGameFeed>(
+  (gamePk) => ({
+    endpoint: `/api/v1.1/game/${gamePk}/feed/live`,
+  })
+)
+
+// Type-safe call
+const game = await getGame(718135)
+const liveGame = getGame.live(718135) // Returns reactive store
+```
+
+### Type Guards
+
+Custom type guards for runtime checks:
+
+```typescript
+function isLiveGame(game: MLB.Game): boolean {
+  return game.status.abstractGameState === 'Live'
+}
+
+function hasLinescore(data: MLB.LiveData): data is MLB.LiveData & {
+  linescore: MLB.Linescore
+} {
+  return data.linescore !== undefined
+}
+```
+
+### Utility Types
+
+Leverage TypeScript's built-in utility types:
+
+```typescript
+// Extract specific fields
+type TeamBasic = Pick<MLB.Team, 'id' | 'name' | 'abbreviation'>
+
+// Make all fields optional
+type PartialGame = Partial<MLB.Game>
+
+// Make all fields required
+type RequiredTeam = Required<MLB.Team>
+
+// Exclude fields
+type TeamWithoutLink = Omit<MLB.Team, 'link'>
+
+// Extract keys as union
+type GameStatusType = MLB.GameStatus['abstractGameState'] // 'Preview' | 'Live' | 'Final'
+```
+
+### Discriminated Unions
+
+Type-safe state handling:
+
+```typescript
+type LoadingState<T> =
+  | { status: 'idle' }
+  | { status: 'loading' }
+  | { status: 'success'; data: T }
+  | { status: 'error'; error: Error }
+
+function handleState(state: LoadingState<MLB.Game>) {
+  switch (state.status) {
+    case 'idle':
+      return 'Not started'
+    case 'loading':
+      return 'Loading...'
+    case 'success':
+      return state.data.gameData.teams.home.name // Type-safe
+    case 'error':
+      return state.error.message // Type-safe
+  }
+}
+```
+
+## SvelteKit Types
+
+### Page Data Types
+
+Auto-generated types for load functions:
+
+```typescript
+// routes/game/[gamePk]/+page.ts
+export async function load({ params }) {
+  return {
+    gamePk: parseInt(params.gamePk),
+    game: await fetchMLB<MLB.LiveGameFeed>(`/api/v1.1/game/${params.gamePk}/feed/live`)
+  }
+}
+
+// routes/game/[gamePk]/+page.svelte
+<script lang="ts">
+  import type { PageData } from './$types'
+  
+  let { data }: { data: PageData } = $props()
+  
+  // data.gamePk is number
+  // data.game is MLB.LiveGameFeed
+</script>
+```
+
+### Route Parameters
+
+Type-safe parameter matchers:
+
+```typescript
+// src/params/integer.ts
+export function match(param: string): boolean {
+  return /^\d+$/.test(param)
+}
+
+// Use in route: [gamePk=integer]
+```
+
+## Svelte 5 Runes with TypeScript
+
+### `$state` with Types
+
+```typescript
+let count = $state<number>(0)
+let user = $state<MLB.Person | null>(null)
+let teams = $state<MLB.Team[]>([])
+```
+
+### `$derived` with Type Inference
+
+```typescript
+let firstName = $state('Shohei')
+let lastName = $state('Ohtani')
+
+// Type is inferred as string
+let fullName = $derived(`${firstName} ${lastName}`)
+
+// Explicit type
+let isLongName = $derived<boolean>(fullName.length > 10)
+```
+
+### `$effect` with Async
+
+```typescript
+let gamePk = $state(718135)
+let game = $state<MLB.LiveGameFeed | null>(null)
+
+$effect(() => {
+  fetchMLB<MLB.LiveGameFeed>(`/api/v1.1/game/${gamePk}/feed/live`)
+    .then(data => game = data)
+})
+```
+
+## Type Safety in API Calls
+
+### Response Types
+
+All MLB API responses are typed:
+
+```typescript
+// Schedule
+const schedule = await fetchMLB<MLB.ScheduleResponse>(
+  '/api/v1/schedule',
+  { sportId: 1, date: '2024-04-01' }
+)
+
+// Games array is typed
+schedule.dates[0].games.forEach((game: MLB.Game) => {
+  console.log(game.teams.home.team.name)
+})
+
+// Player stats
+const stats = await fetchMLB<MLB.PlayerStatsResponse>(
+  `/api/v1/people/${playerId}/stats`,
+  { stats: 'season', season: '2024' }
+)
+```
+
+### Parameter Types
+
+```typescript
+namespace Fetch {
+  type ParamValue = string | number | boolean | null | undefined
+  type Params = Record<string, ParamValue | ParamValue[]>
+}
+```
+
+## Error Handling
+
+### Typed Errors
+
+```typescript
+interface ApiError {
+  message: string
+  statusCode: number
+  timestamp: string
+}
+
+try {
+  const game = await fetchMLB<MLB.LiveGameFeed>(endpoint)
+} catch (error) {
+  if (error instanceof Error) {
+    console.error(error.message)
+  }
+}
+```
+
+### Result Types
+
+```typescript
+type Result<T, E = Error> =
+  | { ok: true; value: T }
+  | { ok: false; error: E }
+
+async function safelyFetchGame(gamePk: number): Promise<Result<MLB.LiveGameFeed>> {
+  try {
+    const game = await fetchMLB<MLB.LiveGameFeed>(`/api/v1.1/game/${gamePk}/feed/live`)
+    return { ok: true, value: game }
+  } catch (error) {
+    return { ok: false, error: error as Error }
+  }
+}
+```
+
+## Namespace Organization
+
+All MLB types live in the `MLB` namespace:
+
+```typescript
+declare global {
+  namespace MLB {
+    // Teams
+    interface Team { ... }
+    interface TeamDetailed extends Team { ... }
+    interface LeagueRecord { ... }
+    
+    // Games
+    interface Game { ... }
+    interface LiveGameFeed { ... }
+    interface GameStatus { ... }
+    
+    // Players
+    interface Person { ... }
+    interface PlayerStats { ... }
+    
+    // And 100+ more...
+  }
+}
+```
+
+**Benefits:**
+- No import needed for types
+- Clear categorization
+- Autocomplete works everywhere
+- Consistent naming
+
+## Type Checking
+
+### Development
+
+Run type checker during development:
+
+```bash
+npm run check
+# Runs: svelte-kit sync && svelte-check --tsconfig ./tsconfig.json
+
+npm run check:watch
+# Runs: svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch
+```
+
+### CI/CD
+
+Type checking is part of the build process:
+
+```bash
+npm run build
+# Type errors will fail the build
+```
+
+## Best Practices
+
+1. **Always type function parameters and return values**
+   ```typescript
+   function calculateAverage(stats: number[]): number { ... }
+   ```
+
+2. **Use inference when obvious**
+   ```typescript
+   let count = 0 // Inferred as number
+   ```
+
+3. **Avoid `any` - use `unknown` if needed**
+   ```typescript
+   // Bad
+   let data: any
+   
+   // Good
+   let data: unknown
+   if (typeof data === 'object') { ... }
+   ```
+
+4. **Type component props explicitly**
+   ```typescript
+   interface Props {
+     game: MLB.Game
+   }
+   ```
+
+5. **Use const assertions for literal types**
+   ```typescript
+   const GAME_TYPES = ['R', 'S', 'E', 'A'] as const
+   type GameType = typeof GAME_TYPES[number] // 'R' | 'S' | 'E' | 'A'
+   ```
+
+6. **Leverage type narrowing**
+   ```typescript
+   if (game.status.abstractGameState === 'Live') {
+     // TypeScript knows state is 'Live' here
+   }
+   ```
+
+7. **Use satisfies for object validation**
+   ```typescript
+   const config = {
+     endpoint: '/api/v1/schedule',
+     params: { sportId: 1 }
+   } satisfies { endpoint: string; params: Record<string, unknown> }
+   ```
+
+8. **Document complex types**
+   ```typescript
+   /**
+    * Represents a player's batting statistics for a specific season
+    */
+   interface BattingStats {
+     avg: string // Batting average as string (e.g., ".300")
+     homeRuns: number
+     rbi: number
+   }
+   ```
+
+## Type Safety Benefits
+
+1. **Catch errors at compile time** - Before code runs
+2. **IntelliSense support** - Autocomplete in editors
+3. **Refactoring confidence** - Rename safely
+4. **Self-documenting code** - Types explain intent
+5. **Runtime safety** - Fewer null/undefined errors
+6. **Team collaboration** - Clear contracts between modules

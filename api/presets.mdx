@@ -1,0 +1,541 @@
+---
+title: Preset Functions
+description: Pre-configured fetch functions for common MLB Stats API queries
+---
+
+## Overview
+
+Preset functions are pre-configured wrappers around `fetchMLB` that simplify common queries. They provide:
+
+- Clean, type-safe APIs for frequent operations
+- Automatic field filtering for optimal performance
+- Built-in parameter validation
+- Support for both standard and live data fetching
+
+All preset functions are located in `~/workspace/source/src/lib/fetch/presets.ts`.
+
+## Available Presets
+
+### fetchSeason
+
+Fetch season metadata including start/end dates and important dates.
+
+#### Function Signature
+
+```typescript
+export async function fetchSeason(
+  year: string, 
+  sportId = '1'
+): Promise<MLB.Season | undefined>
+```
+
+#### Parameters
+
+<ParamField path="year" type="string" required>
+  Season year (e.g., `"2025"`)
+</ParamField>
+
+<ParamField path="sportId" type="string" default="1">
+  Sport ID (1=MLB, 11=AAA, etc.)
+</ParamField>
+
+#### Return Value
+
+<ResponseField name="season" type="MLB.Season">
+  Season object with dates and metadata, or `undefined` if not found
+</ResponseField>
+
+#### Usage Example
+
+```typescript
+import { fetchSeason } from '$lib/fetch/presets'
+
+const season = await fetchSeason('2025')
+
+console.log('Season starts:', season?.regularSeasonStartDate)
+console.log('Season ends:', season?.regularSeasonEndDate)
+```
+
+#### Source
+
+From `~/workspace/source/src/lib/fetch/presets.ts:5-12`:
+
+```typescript
+export async function fetchSeason(year: string, sportId = '1') {
+  const seasons = await fetchMLB<MLB.SeasonResponse>(`/api/v1/seasons`, {
+    sportId,
+    season: year,
+  })
+
+  return seasons?.seasons?.[0]
+}
+```
+
+---
+
+### fetchWeekSchedule
+
+Fetch a full week's schedule starting from a given date.
+
+#### Function Signature
+
+```typescript
+export async function fetchWeekSchedule(
+  date: string, 
+  sportId = '1'
+): Promise<MLB.ScheduleResponse>
+```
+
+#### Parameters
+
+<ParamField path="date" type="string" required>
+  Any date within the desired week (ISO format: YYYY-MM-DD)
+</ParamField>
+
+<ParamField path="sportId" type="string" default="1">
+  Sport ID
+</ParamField>
+
+#### Return Value
+
+<ResponseField name="schedule" type="MLB.ScheduleResponse">
+  Schedule response with all games for the week, including linescore and flags
+</ResponseField>
+
+#### Usage Example
+
+```typescript
+import { fetchWeekSchedule } from '$lib/fetch/presets'
+
+const schedule = await fetchWeekSchedule('2026-03-26')
+
+for (const date of schedule.dates) {
+  console.log(`Games on ${date.date}:`, date.games.length)
+}
+```
+
+#### Field Configuration
+
+Automatically includes optimized fields from `~/workspace/source/src/lib/fetch/presets.ts:29-38`:
+
+```typescript
+fields: [
+  'dates,date,venue,description,seriesGameNumber,gamesInSeries',
+  'games,gamePk,gameType,gameDate',
+  'status,abstractGameState,detailedState,reason',
+  'probablePitchers',
+  'flags,noHitter,perfectGame',
+  'teams,away,home,team,id,name,leagueRecord,wins,losses,score',
+  'linescore,currentInning,scheduledInnings',
+  'innings,num,runs,hits,errors,leftOnBase',
+]
+```
+
+---
+
+### fetchDaySchedule
+
+Fetch schedule for a specific day.
+
+#### Function Signature
+
+```typescript
+export async function fetchDaySchedule(
+  date: string, 
+  sportId = '1'
+): Promise<MLB.ScheduleResponse>
+```
+
+#### Parameters
+
+<ParamField path="date" type="string" required>
+  Specific date (ISO format: YYYY-MM-DD)
+</ParamField>
+
+<ParamField path="sportId" type="string" default="1">
+  Sport ID
+</ParamField>
+
+#### Usage Example
+
+```typescript
+import { fetchDaySchedule } from '$lib/fetch/presets'
+
+const schedule = await fetchDaySchedule('2026-03-26')
+
+console.log('Total games:', schedule.totalGames)
+console.log('Games:', schedule.dates[0]?.games)
+```
+
+---
+
+### fetchfeedLive
+
+Fetch the complete live game feed.
+
+#### Function Signature
+
+```typescript
+export const fetchfeedLive: (
+  gamePk: string | number
+) => Promise<MLB.LiveGameFeed> & {
+  live: (gamePk: string | number) => LiveDataReturn<MLB.LiveGameFeed>
+}
+```
+
+#### Parameters
+
+<ParamField path="gamePk" type="string | number" required>
+  Game primary key (e.g., `813024` or `"813024"`)
+</ParamField>
+
+#### Return Value
+
+<ResponseField name="feed" type="MLB.LiveGameFeed">
+  Complete game feed with plays, linescore, boxscore, and decisions
+</ResponseField>
+
+#### Usage Examples
+
+**Standard fetch:**
+
+```typescript
+import { fetchfeedLive } from '$lib/fetch/presets'
+
+const feed = await fetchfeedLive(813024)
+
+console.log('Current inning:', feed.liveData.linescore.currentInning)
+console.log('All plays:', feed.liveData.plays.allPlays)
+```
+
+**Live auto-refreshing (see [Live Data](/api/live-data)):**
+
+```typescript
+import { fetchfeedLive } from '$lib/fetch/presets'
+
+const { data, isLoading, refresh } = fetchfeedLive.live(813024)
+
+// data automatically updates every 3 seconds
+$effect(() => {
+  console.log('Current play:', data?.liveData.plays.currentPlay)
+})
+```
+
+#### Field Configuration
+
+From `~/workspace/source/src/lib/fetch/presets.ts:64-74`:
+
+```typescript
+fields: [
+  'gamePk,gameData,liveData',
+  'players,fullName,lastName',
+  'gameInfo,attendance,gameDurationMinutes',
+  'weather,condition,temp,wind',
+  'teams,home,away',
+  'linescore,currentInning,scheduledInnings,innings,num,runs,hits,errors,leftOnBase',
+  'boxscore,position,abbreviation,topPerformers,type,player,boxscoreName,stats,batting,pitching,summary',
+  'decisions,winner,loser,save,id',
+  'plays,allPlays,result,description,about,inning,isTopInning,atBatIndex,isScoringPlay,runnerIndex,count,outs',
+]
+```
+
+---
+
+### fetchBoxscore
+
+Fetch game boxscore with batting and pitching stats.
+
+#### Function Signature
+
+```typescript
+export const fetchBoxscore: (
+  gamePk: string | number,
+  params?: Fetch.Params
+) => Promise<MLB.Boxscore> & {
+  live: (...args) => LiveDataReturn<MLB.Boxscore>
+}
+```
+
+#### Parameters
+
+<ParamField path="gamePk" type="string | number" required>
+  Game primary key
+</ParamField>
+
+<ParamField path="params" type="Fetch.Params">
+  Additional query parameters (e.g., custom fields)
+</ParamField>
+
+#### Usage Example
+
+```typescript
+import { fetchBoxscore } from '$lib/fetch/presets'
+
+const boxscore = await fetchBoxscore(813024)
+
+console.log('Away team:', boxscore.teams.away.team.name)
+console.log('Batting stats:', boxscore.teams.away.stats.batting)
+```
+
+---
+
+### fetchLinescore
+
+Fetch inning-by-inning linescore.
+
+#### Function Signature
+
+```typescript
+export const fetchLinescore: (
+  gamePk: string | number
+) => Promise<MLB.Linescore> & {
+  live: (gamePk: string | number) => LiveDataReturn<MLB.Linescore>
+}
+```
+
+#### Parameters
+
+<ParamField path="gamePk" type="string | number" required>
+  Game primary key
+</ParamField>
+
+#### Usage Example
+
+```typescript
+import { fetchLinescore } from '$lib/fetch/presets'
+
+const linescore = await fetchLinescore(813024)
+
+console.log('Current inning:', linescore.currentInning)
+console.log('Innings:', linescore.innings)
+```
+
+---
+
+### fetchWinProbability
+
+Fetch play-by-play win probability data.
+
+#### Function Signature
+
+```typescript
+export const fetchWinProbability: (
+  gamePk: string | number
+) => Promise<MLB.PlayWinProbability[]> & {
+  live: (gamePk: string | number) => LiveDataReturn<MLB.PlayWinProbability[]>
+}
+```
+
+#### Parameters
+
+<ParamField path="gamePk" type="string | number" required>
+  Game primary key
+</ParamField>
+
+#### Return Value
+
+<ResponseField name="probabilities" type="MLB.PlayWinProbability[]">
+  Array of win probability for each play
+</ResponseField>
+
+#### Usage Example
+
+```typescript
+import { fetchWinProbability } from '$lib/fetch/presets'
+
+const probabilities = await fetchWinProbability(813024)
+
+for (const play of probabilities) {
+  console.log(
+    `Inning ${play.about.inning}: ` +
+    `Home ${(play.homeTeamWinProbability * 100).toFixed(1)}%`
+  )
+}
+```
+
+---
+
+### fetchWeekTransactions
+
+Fetch all transactions for a week.
+
+#### Function Signature
+
+```typescript
+export async function fetchWeekTransactions({
+  date,
+  startDate,
+  endDate,
+  ...params
+}: {
+  date?: string
+  startDate?: string
+  endDate?: string
+} & Fetch.Params): Promise<MLB.TransactionsResponse>
+```
+
+#### Parameters
+
+<ParamField path="date" type="string">
+  Any date within the desired week. The function will automatically calculate the week's start and end dates.
+</ParamField>
+
+<ParamField path="startDate" type="string">
+  Explicit start date (alternative to `date`)
+</ParamField>
+
+<ParamField path="endDate" type="string">
+  Explicit end date (alternative to `date`)
+</ParamField>
+
+<ParamField path="params" type="Fetch.Params">
+  Additional query parameters (e.g., teamId, playerId)
+</ParamField>
+
+#### Usage Examples
+
+**Using date:**
+
+```typescript
+import { fetchWeekTransactions } from '$lib/fetch/presets'
+
+const transactions = await fetchWeekTransactions({ 
+  date: '2026-03-26' 
+})
+
+for (const transaction of transactions.transactions) {
+  console.log(transaction.description)
+}
+```
+
+**Using explicit date range:**
+
+```typescript
+import { fetchWeekTransactions } from '$lib/fetch/presets'
+
+const transactions = await fetchWeekTransactions({
+  startDate: '2026-03-26',
+  endDate: '2026-04-02',
+  teamId: '119' // Filter to Dodgers only
+})
+```
+
+#### Source
+
+From `~/workspace/source/src/lib/fetch/presets.ts:117-137`:
+
+```typescript
+export async function fetchWeekTransactions({
+  date,
+  startDate,
+  endDate,
+  ...params
+}: {
+  date?: string
+  startDate?: string
+  endDate?: string
+} & Fetch.Params) {
+  const weekStartDate = date ? getWeekDates(date).startDate : startDate
+  const weekEndDate = date ? getWeekDates(date).endDate : endDate
+
+  return await fetchMLB<MLB.TransactionsResponse>('/api/v1/transactions', {
+    sportId: '1',
+    startDate: formatDate(weekStartDate!, { locale: 'en-CA' }),
+    endDate: formatDate(weekEndDate!, { locale: 'en-CA' }),
+    fields: ['transactions,date,description,typeDesc,toTeam,fromTeam,id,name,person'],
+    ...params,
+  })
+}
+```
+
+## Creating Custom Presets
+
+You can create your own preset functions using the `createPreset` factory:
+
+### Function Signature
+
+From `~/workspace/source/src/lib/fetch/index.ts:16-32`:
+
+```typescript
+export function createPreset<TArgs extends unknown[], T>(
+  build: (...args: TArgs) => { endpoint: string; params?: Fetch.Params }
+): ((...args: TArgs) => Promise<T>) & {
+  live: (...args: TArgs) => ReturnType<typeof fetchLiveMLB<T>>
+}
+```
+
+### Example: Custom Team Stats Preset
+
+```typescript
+import { createPreset } from '$lib/fetch'
+
+interface TeamStats {
+  stats: Array<{
+    type: { displayName: string }
+    splits: Array<{ stat: Record<string, number> }>
+  }>
+}
+
+export const fetchTeamStats = createPreset<
+  [teamId: string, season: string],
+  TeamStats
+>((teamId, season) => ({
+  endpoint: `/api/v1/teams/${teamId}/stats`,
+  params: {
+    season,
+    stats: 'season',
+    group: 'hitting,pitching'
+  }
+}))
+
+// Usage
+const stats = await fetchTeamStats('119', '2025')
+
+// Also works with live data
+const { data } = fetchTeamStats.live('119', '2025')
+```
+
+### Example: Custom Player Search Preset
+
+```typescript
+import { createPreset } from '$lib/fetch'
+
+interface SearchResults {
+  people: Array<{
+    id: number
+    fullName: string
+    primaryPosition: { abbreviation: string }
+  }>
+}
+
+export const searchPlayers = createPreset<[name: string], SearchResults>(
+  (name) => ({
+    endpoint: '/api/v1/people/search',
+    params: { names: name }
+  })
+)
+
+// Usage
+const results = await searchPlayers('Ohtani')
+console.log('Found players:', results.people)
+```
+
+## Live Data Support
+
+All presets created with `createPreset` automatically include a `.live()` method for real-time data. See the [Live Data documentation](/api/live-data) for details.
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Live Data" icon="refresh" href="/api/live-data">
+    Auto-refresh data with real-time updates
+  </Card>
+  
+  <Card title="Fetch Library" icon="code" href="/api/fetch-library">
+    Learn about the core fetchMLB function
+  </Card>
+  
+  <Card title="Browse Endpoints" icon="list" href="/api/endpoints">
+    View all available API endpoints
+  </Card>
+</CardGroup>

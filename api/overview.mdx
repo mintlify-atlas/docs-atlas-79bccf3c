@@ -1,0 +1,141 @@
+---
+title: MLB Stats API Overview
+description: Introduction to the MLB Stats API and how to access baseball data programmatically
+---
+
+## Introduction
+
+The MLB Stats API is a comprehensive REST API that provides access to real-time and historical baseball data including:
+
+- Game schedules and live scores
+- Player statistics and biographical information
+- Team rosters and standings
+- Play-by-play data and win probability
+- Transactions, draft results, and historical records
+
+This application provides TypeScript functions that simplify fetching data from the MLB Stats API.
+
+## Base URL
+
+All API requests are made to the MLB Stats API base URL:
+
+```typescript
+const HOST = 'https://statsapi.mlb.com'
+```
+
+Endpoints are relative to this base URL. For example:
+- `/api/v1/schedule` becomes `https://statsapi.mlb.com/api/v1/schedule`
+- `/api/v1.1/game/{gamePk}/feed/live` becomes `https://statsapi.mlb.com/api/v1.1/game/813024/feed/live`
+
+## Authentication
+
+The MLB Stats API is **publicly accessible** and does not require authentication or API keys. All endpoints can be accessed without credentials.
+
+<Note>
+While no authentication is required, be mindful of rate limits and avoid excessive requests that could impact API availability.
+</Note>
+
+## API Versioning
+
+The API uses URL-based versioning:
+
+- **v1** - Most endpoints use `/api/v1/`
+- **v1.1** - Live game feeds use `/api/v1.1/` for enhanced real-time data
+
+## Query Parameters
+
+Most endpoints support filtering and customization through query parameters:
+
+### Common Parameters
+
+<ParamField query="sportId" type="string" default="1">
+  Sport identifier. `1` = MLB, `11` = AAA, `51` = International
+</ParamField>
+
+<ParamField query="season" type="string">
+  Year for seasonal data (e.g., `"2025"`)
+</ParamField>
+
+<ParamField query="fields" type="string | string[]">
+  Comma-separated field paths to include in response. Reduces payload size by returning only requested fields.
+  
+  Example: `"dates,games,gamePk,teams,team,name"`
+</ParamField>
+
+<ParamField query="hydrate" type="string">
+  Additional data to include in response. Common values: `"team"`, `"person"`, `"linescore"`
+</ParamField>
+
+### Date Parameters
+
+<ParamField query="date" type="string">
+  Specific date in ISO format: `"2026-03-26"`
+</ParamField>
+
+<ParamField query="startDate" type="string">
+  Start of date range in ISO format
+</ParamField>
+
+<ParamField query="endDate" type="string">
+  End of date range in ISO format
+</ParamField>
+
+## Response Format
+
+All API responses are in JSON format. The structure varies by endpoint but typically includes:
+
+```json
+{
+  "copyright": "Copyright notice",
+  "data": {
+    // Endpoint-specific data
+  }
+}
+```
+
+## Common Entity IDs
+
+Many endpoints require specific entity IDs:
+
+### Sport IDs
+- `1` - Major League Baseball (MLB)
+- `11` - Triple-A (AAA)
+- `51` - International Baseball
+
+### League IDs
+- `103` - American League (AL)
+- `104` - National League (NL)
+
+### Team IDs (Examples)
+- `119` - Los Angeles Dodgers
+- `147` - New York Yankees
+
+### Game Types
+- `R` - Regular Season
+- `S` - Spring Training
+- `P` - Playoffs
+- `W` - World Series
+
+<Tip>
+Use the [API Playground](/api/playground) to explore endpoints and discover entity IDs interactively.
+</Tip>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Try the Playground" icon="play" href="/api/playground">
+    Explore API endpoints interactively and see live responses
+  </Card>
+  
+  <Card title="Browse Endpoints" icon="list" href="/api/endpoints">
+    View all available MLB Stats API endpoints
+  </Card>
+  
+  <Card title="Use Fetch Library" icon="code" href="/api/fetch-library">
+    Learn how to fetch data in your TypeScript code
+  </Card>
+  
+  <Card title="Preset Functions" icon="bolt" href="/api/presets">
+    Use pre-configured functions for common queries
+  </Card>
+</CardGroup>

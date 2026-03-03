@@ -1,0 +1,236 @@
+---
+title: Features Overview
+description: Comprehensive guide to all features available in MLB.TheOhtani.com including game tracking, schedules, player stats, and API playground.
+---
+
+## Game Tracking
+
+MLB.TheOhtani.com provides real-time tracking of MLB games with live updates and detailed information.
+
+### Live Scores and Updates
+
+- **Real-time scores** - Game scores update automatically every 3 minutes during live games
+- **Game status** - See whether games are scheduled, in progress, final, or postponed
+- **Line scores** - View inning-by-inning scoring breakdown
+- **Play-by-play** - Follow the action with detailed play descriptions
+
+### Game Details
+
+Each game page includes:
+
+- Starting lineups and rosters
+- Pitcher matchups
+- Current game situation (runners, outs, count)
+- Team statistics for the game
+- Historical matchup data
+
+<Info>
+  Games scheduled for today automatically refresh to show the latest scores and game state.
+</Info>
+
+## Schedule Views
+
+View MLB games in flexible calendar formats to plan your viewing.
+
+### Daily Schedule
+
+Access at `/schedule/day` to see:
+
+- All games scheduled for a specific date
+- Game times in your local timezone
+- Quick access to game details
+- Filter by sport (MLB, Minor Leagues, etc.)
+
+### Weekly Schedule
+
+Access at `/schedule/week` to see:
+
+- Games organized by day across a full week
+- Expandable day sections (today's games auto-expanded)
+- Game count per day
+- Week picker for browsing different weeks
+- Responsive grid layout for multiple games
+
+<Note>
+  Schedule views automatically detect your timezone and display all game times accordingly.
+</Note>
+
+## Player Stats
+
+Explore comprehensive player statistics and compare performance across players.
+
+### Player Search
+
+Find players at `/player` with:
+
+- Search by name or team
+- Player headshots and team information
+- Quick access to detailed player pages
+
+### Player Profiles
+
+Each player page (`/player/[personId]`) displays:
+
+- Career statistics
+- Season-by-season breakdown
+- Biographical information
+- Current team and position
+- Recent performance
+
+### Player Comparison
+
+The comparison tool at `/player/compare` allows you to:
+
+- Select multiple players to compare side-by-side
+- Choose specific stat categories (hitting, pitching, fielding)
+- Highlight best values in each category
+- View normalized stats for fair comparisons
+- Save comparison sets for later reference
+
+<Info>
+  The comparison tool automatically highlights the best performer in each statistical category.
+</Info>
+
+## Teams
+
+Access comprehensive team information and standings.
+
+### Team Pages
+
+Visit `/teams` to browse all MLB teams, then view individual team pages (`/teams/[teamId]`) featuring:
+
+- Current roster with player positions
+- Team schedule and recent results
+- Season statistics
+- Team transactions
+- Historical information
+
+### Standings
+
+View league standings at `/standings` with:
+
+- Division standings (AL/NL East, Central, West)
+- Win-loss records and percentages
+- Games behind leader
+- Playoff positioning
+- Wild card standings
+
+## Transactions
+
+Stay updated on player movements and roster changes.
+
+Access at `/transactions` to see:
+
+- Recent trades and signings
+- Waivers and releases
+- Optional assignments and recalls
+- Organized by team and date
+- Transaction type indicators
+
+<Note>
+  The home page displays today's transactions for quick access to the latest roster moves.
+</Note>
+
+## Stat Leaders
+
+View top performers across key statistical categories.
+
+Access at `/stats` to see:
+
+- Batting leaders (average, home runs, RBIs, etc.)
+- Pitching leaders (ERA, strikeouts, wins, etc.)
+- Fielding statistics
+- Customizable by season
+- Sortable categories
+
+## API Playground
+
+The Stats API Playground provides an interactive interface to explore the MLB Stats API.
+
+### Features
+
+Access at `/api/v1` (development mode) to:
+
+- Browse available API endpoints
+- Make custom API requests
+- View formatted JSON responses
+- Test different query parameters
+- Learn the API structure
+
+### Usage Tips
+
+- Replace `https://statsapi.mlb.com/api/v1/...` with `https://mlb.theohtani.com/api/v1/...` in your browser
+- Use the playground to prototype queries before implementing in code
+- Explore nested data structures with syntax highlighting
+
+<Info>
+  The API Playground is an excellent resource for developers integrating with the MLB Stats API.
+</Info>
+
+## Favorites System
+
+Personalize your experience by marking teams and players as favorites.
+
+### How It Works
+
+- Click the star icon on any team or player page
+- Favorites appear in the sidebar for quick access
+- Home page shows your favorite team's schedule
+- Games featuring favorite teams are highlighted
+- Favorites persist across sessions
+
+### Benefits
+
+- Quick navigation to teams and players you follow
+- Personalized home page with favorite team schedule
+- Priority sorting in schedule views
+- Easy access from any page via the sidebar
+
+## Season Information
+
+View key dates and milestones for the current MLB season.
+
+Includes:
+
+- Season start and end dates
+- All-Star Game date
+- Playoff schedule
+- Important deadlines (trade deadline, roster expansion, etc.)
+- Days until key events with countdown timers
+
+## Responsive Design
+
+MLB.TheOhtani.com adapts to any screen size:
+
+- Mobile-optimized layouts for phones and tablets
+- Desktop grid views for larger screens
+- Collapsible sidebar navigation
+- Touch-friendly controls
+- Safe area support for notched devices
+
+## Dark Mode
+
+The app includes automatic dark mode support:
+
+- Respects system preferences by default
+- Manual toggle in the sidebar
+- Optimized color schemes for readability
+- Smooth transitions between modes
+- Persistent preference across sessions
+
+<CardGroup cols={2}>
+  <Card
+    title="Navigation Guide"
+    icon="map"
+    href="/navigation"
+  >
+    Learn how to navigate between different sections and features.
+  </Card>
+  <Card
+    title="Get Started"
+    icon="rocket"
+    href="/introduction"
+  >
+    Return to the introduction and quick start guide.
+  </Card>
+</CardGroup>

@@ -1,0 +1,470 @@
+---
+title: Live Data Fetching
+description: Real-time data updates with automatic polling and Svelte 5 runes
+---
+
+## Overview
+
+The live data system provides automatic polling for real-time MLB data updates. It's built on Svelte 5 runes and provides reactive state management for live games, scores, and statistics.
+
+## fetchLiveMLB Function
+
+The core live data function is `fetchLiveMLB`, which sets up automatic polling with configurable intervals.
+
+### Function Signature
+
+From `~/workspace/source/src/lib/fetch/live.svelte.ts:3-9`:
+
+```typescript
+export function fetchLiveMLB<T>(
+  endpoint: string,
+  params?: Fetch.Params,
+  options: { interval?: number } = {
+    interval: 3_000,
+  },
+)
+```
+
+### Parameters
+
+<ParamField path="endpoint" type="string" required>
+  API endpoint path (e.g., `/api/v1/schedule`)
+</ParamField>
+
+<ParamField path="params" type="Fetch.Params">
+  Query parameters as key-value pairs
+</ParamField>
+
+<ParamField path="options.interval" type="number" default={3000}>
+  Polling interval in milliseconds (default: 3000ms = 3 seconds)
+</ParamField>
+
+### Return Value
+
+From `~/workspace/source/src/lib/fetch/live.svelte.ts:44-59`:
+
+```typescript
+return {
+  get data() {
+    return data
+  },
+  get error() {
+    return error
+  },
+  get isLoading() {
+    return isLoading
+  },
+  get isValidating() {
+    return isValidating
+  },
+  refresh: revalidate,
+  stop: () => clearInterval(timer),
+}
+```
+
+<ResponseField name="data" type="T | undefined">
+  The fetched data, `undefined` until first load completes
+</ResponseField>
+
+<ResponseField name="error" type="Error | undefined">
+  Error object if fetch failed, `undefined` otherwise
+</ResponseField>
+
+<ResponseField name="isLoading" type="boolean">
+  `true` when data is `undefined` and a fetch is in progress (initial load only)
+</ResponseField>
+
+<ResponseField name="isValidating" type="boolean">
+  `true` when any fetch is in progress (initial or refresh)
+</ResponseField>
+
+<ResponseField name="refresh" type="() => Promise<void>">
+  Manually trigger a data refresh
+</ResponseField>
+
+<ResponseField name="stop" type="() => void">
+  Stop automatic polling and cleanup the interval timer
+</ResponseField>
+
+## How It Works
+
+The live data system:
+
+1. Makes an initial fetch immediately upon creation
+2. Sets up an interval timer to poll at the specified frequency
+3. Updates reactive state on each successful fetch
+4. Automatically cleans up the timer when the component unmounts
+5. Uses Svelte 5 runes (`$state`, `$derived`, `$effect`) for reactivity
+
+### Source Code
+
+From `~/workspace/source/src/lib/fetch/live.svelte.ts:22-42`:
+
+```typescript
+async function revalidate() {
+  isValidating = true
+
+  try {
+    const response = await fetch(url.toString())
+    data = (await response.json()) as T
+    error = undefined
+  } catch (e) {
+    error = e instanceof Error ? e : new Error(String(e))
+  } finally {
+    isValidating = false
+  }
+}
+
+revalidate()
+
+const timer = setInterval(revalidate, options.interval)
+
+$effect(() => {
+  return () => clearInterval(timer)
+})
+```
+
+## Usage with Presets
+
+All preset functions created with `createPreset` automatically include a `.live()` method:
+
+### Live Game Feed
+
+```typescript
+import { fetchfeedLive } from '$lib/fetch/presets'
+
+const { data, isLoading, error, refresh, stop } = fetchfeedLive.live(813024)
+
+// Reactive updates
+$effect(() => {
+  if (data) {
+    console.log('Current inning:', data.liveData.linescore.currentInning)
+    console.log('Latest play:', data.liveData.plays.currentPlay?.result.description)
+  }
+})
+
+// Manually refresh
+button.onclick = () => refresh()
+
+// Stop polling when game ends
+$effect(() => {
+  if (data?.gameData.status.abstractGameState === 'Final') {
+    stop()
+  }
+})
+```
+
+### Live Linescore
+
+```typescript
+import { fetchLinescore } from '$lib/fetch/presets'
+
+const { data: linescore, isValidating } = fetchLinescore.live(813024)
+
+$effect(() => {
+  console.log('Score updating:', isValidating)
+  console.log('Current score:', {
+    away: linescore?.teams.away.runs,
+    home: linescore?.teams.home.runs
+  })
+})
+```
+
+### Live Win Probability
+
+```typescript
+import { fetchWinProbability } from '$lib/fetch/presets'
+
+const { data: probabilities } = fetchWinProbability.live(813024)
+
+$effect(() => {
+  if (probabilities && probabilities.length > 0) {
+    const latest = probabilities[probabilities.length - 1]
+    console.log(
+      `Home win probability: ${(latest.homeTeamWinProbability * 100).toFixed(1)}%`
+    )
+  }
+})
+```
+
+## Direct Usage
+
+You can also use `fetchLiveMLB` directly for custom endpoints:
+
+### Live Schedule
+
+```typescript
+import { fetchLiveMLB } from '$lib/fetch/live.svelte'
+
+const { data: schedule, isLoading } = fetchLiveMLB<MLB.ScheduleResponse>(
+  '/api/v1/schedule',
+  {
+    sportId: '1',
+    date: '2026-03-26'
+  },
+  { interval: 5000 } // Poll every 5 seconds
+)
+
+$effect(() => {
+  console.log('Loading:', isLoading)
+  console.log('Games today:', schedule?.dates[0]?.games?.length)
+})
+```
+
+### Live Standings
+
+```typescript
+import { fetchLiveMLB } from '$lib/fetch/live.svelte'
+
+const { data: standings, error } = fetchLiveMLB<MLB.StandingsResponse>(
+  '/api/v1/standings',
+  {
+    leagueId: '103,104',
+    season: '2025'
+  },
+  { interval: 60000 } // Poll every minute
+)
+
+$effect(() => {
+  if (error) {
+    console.error('Failed to fetch standings:', error)
+  }
+})
+```
+
+## Configuring Poll Interval
+
+Adjust the polling frequency based on your needs:
+
+### Fast Updates (Live Games)
+
+```typescript
+// Poll every second for critical live data
+const { data } = fetchfeedLive.live(813024)
+// Uses default 3 second interval
+
+// Or customize for even faster updates
+const { data } = fetchLiveMLB(
+  `/api/v1.1/game/813024/feed/live`,
+  {},
+  { interval: 1000 } // 1 second
+)
+```
+
+### Moderate Updates (Scores)
+
+```typescript
+// Poll every 10 seconds for scores
+const { data } = fetchLiveMLB(
+  '/api/v1/schedule',
+  { sportId: '1', date: '2026-03-26' },
+  { interval: 10000 }
+)
+```
+
+### Slow Updates (Standings, Stats)
+
+```typescript
+// Poll every minute for less critical data
+const { data } = fetchLiveMLB(
+  '/api/v1/standings',
+  { leagueId: '103,104', season: '2025' },
+  { interval: 60000 }
+)
+```
+
+## State Management
+
+### Loading States
+
+```typescript
+import { fetchfeedLive } from '$lib/fetch/presets'
+
+const { data, isLoading, isValidating } = fetchfeedLive.live(813024)
+```
+
+- **isLoading**: `true` only during initial fetch (when `data` is `undefined`)
+- **isValidating**: `true` during any fetch (initial or refresh)
+
+```svelte
+{#if isLoading}
+  <p>Loading game data...</p>
+{:else if data}
+  <p>Current inning: {data.liveData.linescore.currentInning}</p>
+  {#if isValidating}
+    <span class="spinner">Updating...</span>
+  {/if}
+{/if}
+```
+
+### Error Handling
+
+```typescript
+import { fetchfeedLive } from '$lib/fetch/presets'
+
+const { data, error, refresh } = fetchfeedLive.live(813024)
+
+$effect(() => {
+  if (error) {
+    console.error('Live data error:', error.message)
+    
+    // Optionally retry
+    setTimeout(() => refresh(), 5000)
+  }
+})
+```
+
+### Manual Refresh
+
+```typescript
+import { fetchLinescore } from '$lib/fetch/presets'
+
+const live = fetchLinescore.live(813024)
+
+// Force immediate refresh
+button.onclick = async () => {
+  await live.refresh()
+  console.log('Refreshed:', live.data)
+}
+```
+
+### Cleanup
+
+```typescript
+import { fetchfeedLive } from '$lib/fetch/presets'
+
+const live = fetchfeedLive.live(813024)
+
+// Stop polling when done
+onDestroy(() => {
+  live.stop()
+})
+
+// Or conditionally stop
+$effect(() => {
+  if (live.data?.gameData.status.abstractGameState === 'Final') {
+    live.stop()
+    console.log('Game ended, stopped polling')
+  }
+})
+```
+
+## Performance Considerations
+
+### Conditional Polling
+
+Stop polling when data is no longer needed:
+
+```typescript
+import { fetchfeedLive } from '$lib/fetch/presets'
+
+let gamePk = $state(813024)
+let shouldPoll = $state(true)
+
+$effect(() => {
+  if (!shouldPoll) return
+  
+  const live = fetchfeedLive.live(gamePk)
+  
+  return () => live.stop()
+})
+```
+
+### Dynamic Intervals
+
+Adjust polling speed based on game state:
+
+```typescript
+import { fetchLiveMLB } from '$lib/fetch/live.svelte'
+
+let interval = $state(3000)
+let gamePk = $state(813024)
+
+$effect(() => {
+  const live = fetchLiveMLB<MLB.LiveGameFeed>(
+    `/api/v1.1/game/${gamePk}/feed/live`,
+    {},
+    { interval }
+  )
+  
+  // Adjust interval based on game state
+  $effect(() => {
+    const state = live.data?.gameData.status.abstractGameState
+    
+    if (state === 'Live') {
+      interval = 3000 // Fast during live play
+    } else if (state === 'Preview') {
+      interval = 30000 // Slow before game starts
+    } else if (state === 'Final') {
+      live.stop() // Stop after game ends
+    }
+  })
+  
+  return () => live.stop()
+})
+```
+
+## Component Example
+
+Complete Svelte component with live data:
+
+```svelte
+<script>
+  import { fetchfeedLive } from '$lib/fetch/presets'
+  
+  let { gamePk } = $props()
+  
+  const live = fetchfeedLive.live(gamePk)
+  
+  // Stop polling when game ends
+  $effect(() => {
+    if (live.data?.gameData.status.abstractGameState === 'Final') {
+      live.stop()
+    }
+  })
+  
+  // Cleanup on unmount
+  $effect(() => {
+    return () => live.stop()
+  })
+</script>
+
+{#if live.isLoading}
+  <p>Loading game...</p>
+{:else if live.error}
+  <p>Error: {live.error.message}</p>
+  <button onclick={() => live.refresh()}>Retry</button>
+{:else if live.data}
+  <div>
+    <h2>{live.data.gameData.teams.away.name} @ {live.data.gameData.teams.home.name}</h2>
+    
+    <div class="score">
+      <span>{live.data.liveData.linescore.teams.away.runs}</span>
+      -
+      <span>{live.data.liveData.linescore.teams.home.runs}</span>
+    </div>
+    
+    <p>Inning: {live.data.liveData.linescore.currentInning}</p>
+    
+    {#if live.isValidating}
+      <span class="updating">●</span>
+    {/if}
+  </div>
+{/if}
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Preset Functions" icon="bolt" href="/api/presets">
+    Browse all available preset functions
+  </Card>
+  
+  <Card title="Fetch Library" icon="code" href="/api/fetch-library">
+    Learn about the core fetchMLB function
+  </Card>
+  
+  <Card title="Browse Endpoints" icon="list" href="/api/endpoints">
+    View all available API endpoints
+  </Card>
+</CardGroup>
